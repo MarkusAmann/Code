@@ -1,10 +1,10 @@
 %%
-x0 = [0 10 0 0]; l0 = [0.1 0.5 0.1 0.5]; % not used right now, l0 is chosen to be zeros
-t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; kapparef = 0.01; sf = 2*pi/kapparef*0.2; drf = 0; psirf = 0;
+x0 = [0 1 0 0]; l0 = [0.1 0.5 0.1 0.5]; % not used right now, l0 is chosen to be zeros
+t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; kapparef = 0.01; sf = 50; drf = 0; psirf = 0;
 tf_free = 1;
 maxIter = 400;
 maxFunEval = 1e5;
-p.fx = fx; p.fy = fy; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf;
+p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.N = N;  
 p.maxIter = maxIter; p.maxFunEval = maxFunEval;
 t = linspace(t0, tf, N+1);
@@ -37,7 +37,7 @@ switch tf_free
         l3opt = Xopt(7:8:end);
         l4opt = Xopt(8:8:end);
         delta_opt = Xopt(end);
-        tf_opt = delta_opt*p.tf;
+        tf_opt = delta_opt*p.tf
         t = linspace(t0, tf_opt, N+1);
 end
 

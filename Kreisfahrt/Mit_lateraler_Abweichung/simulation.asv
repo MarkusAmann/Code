@@ -1,6 +1,6 @@
 %%
-x0 = [0 10 0 0]; l0 = [0.1 0.5 0.1 0.5]; % not used right now, l0 is chosen to be zeros
-t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; kapparef = 0.01; sf = 2*pi/kapparef*0.2; drf = 0; psirf = 0;
+x0 = [0 1 0 0]; l0 = [0.1 0.5 0.1 0.5]; % not used right now, l0 is chosen to be zeros
+t0 = 0; tf = 60; N = 100; fx = 1; fy = 1; kapparef = 0.01; sf = 100; drf = 0; psirf = 0;
 tf_free = 1;
 maxIter = 400;
 maxFunEval = 1e5;
@@ -14,50 +14,40 @@ p.deltat = deltat;
 switch tf_free
     case 0
         [Xopt,fval,exitflag,output] = indirect_discretization(p);
-        % optimal states
-        sopt = Xopt(1:8:end);
-        vopt = Xopt(2:8:end);
-        dropt = Xopt(3:8:end);
-        psiropt = Xopt(4:8:end);
-        l1opt = Xopt(5:8:end);
-        l2opt = Xopt(6:8:end);
-        l3opt = Xopt(7:8:end);
-        l4opt = Xopt(8:8:end);
-
     case 1
-        p.tf = 100;
+        p.tf = 10000;
         [Xopt,fval,exitflag,output] = indirect_discretization(p, tf_free);
-        % optimal states
-        sopt = Xopt(1:8:end-1);
-        vopt = Xopt(2:8:end);
-        dropt = Xopt(3:8:end);
-        psiropt = Xopt(4:8:end);
-        l1opt = Xopt(5:8:end);
-        l2opt = Xopt(6:8:end);
-        l3opt = Xopt(7:8:end);
-        l4opt = Xopt(8:8:end);
-        delta_opt = Xopt(end);
-        tf_opt = delta_opt*p.tf;
-        t = linspace(t0, tf_opt, N+1);
 end
 
 %%
+% optimal states
+sopt = Xopt(1:8:end);
+vopt = Xopt(2:8:end);
+dropt = Xopt(3:8:end);
+psiropt = Xopt(4:8:end);
+l1opt = Xopt(5:8:end);
+l2opt = Xopt(6:8:end);
+l3opt = Xopt(7:8:end);
+l4opt = Xopt(8:8:end);
+
 % optimal control inputs
 axopt = -l2opt/fx;
 kappaopt = -l4opt./(fy*vopt.^3);
 % kappaopt(1) = interp1(t(2:end),kappaopt(2:end),0,'pchip','extrap');
 
-% time-derivatives of optimal values and values of reference curve
+% time-derivatives of optimal values
 dot_sopt = vopt.*cos(psiropt)./(1-dropt*kapparef);
 dot_psi = kappaopt.*vopt;
-dot_psiref = kapparef*dot_sopt;
-psiref = cumtrapz(t,dot_psiref);
 dot_psir = dot_psi - dot_psiref;
-vref = dot_sopt;
 
 % lateral acc., heading angle of car
 ayopt = vopt.^2.*kappaopt;
 psiopt = cumtrapz(t,dot_psi); 
+
+% values of reference curve
+dot_psiref = kapparef*dot_sopt;
+psiref = cumtrapz(t,dot_psiref);
+vref = dot_sopt;
 
 % coordinate transformation of car movement to global coordinates
 dx_global_opt = vopt.*cos(psiopt);
