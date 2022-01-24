@@ -1,5 +1,9 @@
+clc
+clear all
+close all
+
 %%
-x0 = [0 1 0 0]; l0 = [0.1 0.5 0.1 0.5]; % not used right now, l0 is chosen to be zeros
+x0 = [0 1 0 0].'; l0 = [0.1 0 0 0].';
 t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
 tf_free = 0;
 maxIter = 400;
@@ -16,7 +20,8 @@ switch tf_free
         t = linspace(p.t0, p.tf, p.N+1);
         deltat = mean(diff(t));
         p.deltat = deltat;
-        solinit = bvpinit(t,@guess_fix_tf);
+        init_guess = @(x)guess_fix_tf(t,p);
+        solinit = bvpinit(t,init_guess);
         sol = bvp4c(@bvpfcn_fix_tf, @bcfcn_fix_tf, solinit, bvpoptions, p);
         % optimal states
         sol_mesh = sol.x;
@@ -34,7 +39,8 @@ switch tf_free
         t = linspace(p.t0, p.tf, p.N+1);
         deltat = mean(diff(t));
         p.deltat = deltat;
-        solinit = bvpinit(t,@guess_free_tf,0.1);
+        init_guess = @(x)guess_free_tf(t,p);
+        solinit = bvpinit(t,init_guess,0.1);
         sol = bvp4c(@bvpfcn_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         % optimal states
         sol_mesh = sol.x;

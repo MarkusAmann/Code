@@ -1,0 +1,6 @@
+function dXdt = myodefun(t,X,p)
+v = X(1); l1 = X(2); l2 = X(3);
+    dXdt = [-l2/p.fx;...
+        0;...
+        -p.fy*p.kapparef^2*v^3 - l1];
+end
