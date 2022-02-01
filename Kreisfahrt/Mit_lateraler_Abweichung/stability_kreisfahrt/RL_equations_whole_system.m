@@ -1,0 +1,21 @@
+function F = RL_equations_whole_system(x,params)
+% x = (v,dr,psir,l1,l2,l3,l4,ax,kappa)
+v = x(1);
+dr = x(2);
+psir = x(3);
+l1 = x(4);
+l2 = x(5);
+l3 = x(6);
+l4 = x(7);
+ax = x(8);
+kappa = x(9);
+F(1) = ax;
+F(2) = v*sin(psir);
+F(3) = kappa*v - params.kapparef*v*cos(psir)/(1-dr*params.kapparef);
+F(4) = 0;
+F(5) =  -2*params.fy*kappa^2*v^3 - l1*cos(psir)/(1-dr*params.kapparef) - l3*sin(psir) - l4*kappa + l4*params.kapparef*cos(psir)/(1-dr*params.kapparef);
+F(6) = -l1*params.kapparef*v/(1-dr*params.kapparef)^2 + l4*params.kapparef^2*v/(1-dr*params.kapparef)^2;
+F(7) = -v*l3*cos(psir) + l1*v*sin(psir)/(1-dr*params.kapparef) - l4*v*params.kapparef*sin(psir)/(1-dr*params.kapparef);
+F(8) = kappa + l4/(params.fy*v^3);
+F(9) = 1/2*params.fx*ax^2 + 1/2*params.fy*kappa^2*v^4 + l1*v*cos(psir)/(1-dr*params.kapparef) + l2*ax+ l3*v*sin(psir) + l4*kappa*v - l4*v*params.kapparef*cos(psir)/(1-dr*params.kapparef) + 1;
+end
