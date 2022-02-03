@@ -1,12 +1,12 @@
-% clc
+clc
 clear all
 close all
 
 %% Parameter
-x0 = [0 1 0 0].'; l0 = [0 0 0 0].'; l0 = 0.1*randn(4,1);
-alim = 1.06*0.5; kappalim = 1/4*1000;
+x0 = [0 1 0 0].'; l0 = [0 0 0 0].'; % l0 = 0.1*randn(4,1);
+alim = 1.06*1000; kappalim = 1/4*1000;
 umax = [alim;kappalim]; umin = -[alim;kappalim];
-t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; fpsi = 1; kapparef = 0.01; sf = 600; drf = 0; psirf = 0;
+t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; fpsi = 1; kapparef = 0.01; sf = 100; drf = 0; psirf = 0;
 tf_free = 1;
 p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.fpsi = fpsi; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.N = N;  
