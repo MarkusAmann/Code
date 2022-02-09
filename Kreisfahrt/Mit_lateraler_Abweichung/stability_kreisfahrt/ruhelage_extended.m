@@ -1,11 +1,11 @@
 %% Ruhelage
-fun = @(x)RL_equations_whole_system(x,p);
+% fun = @(x)RL_equations_whole_system(x,p);
 % x = (v,dr,psir,l1,l2,l3,l4,ax,kappa) für RL_equations_whole_system
 x0 = [10 10 0 -1 0 0 -5 0 0.01];
 
-% fun = @(x)RL_equations_part_system(x,p);
+fun = @(x)RL_equations_part_system(x,p);
 % x = (v,dr,l1,l4,kappa) für RL_equations_part_system
-% x0 = [10 10 -1 -1 0.01];
+x0 = [10 10 0 -1 0];
 
 options = optimoptions('fsolve','MaxIterations',1e5,'MaxFunctionEvaluations',1e5);
 [x, fval] = fsolve(fun,x0,options);

@@ -1,14 +1,16 @@
-clc
+% clc
 clear all
 close all
 
 %% Parameter
-x0 = [0 1 0 0].'; l0 = [0 0 0 0].'; % l0 = 0.1*randn(4,1);
-alim = 1.06*1000; kappalim = 1/4*1000;
+x0 = [0 5 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
+alim = 1.06*1000; kappalim = 1/4*1000; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim];
-t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; fpsi = 1; kapparef = 0.01; sf = 100; drf = 0; psirf = 0;
+t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; fp = 1; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
 tf_free = 1;
-p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.fpsi = fpsi; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf;
+% l4_init = -0.125*0;
+% x0 = [0;5;0;-pi/2]; l0=[kapparef*l4_init;0;-l4_init^2/(fy*5^3);l4_init];
+p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.fp = fp; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.N = N;  
 
 
@@ -17,19 +19,19 @@ p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.N = N;
 % lambda_4_RL = -p.fy*p.kapparef*(2/(3*p.fy*p.kapparef^2))^(3/4);
 % v_RL = (2/(3*p.fy*p.kapparef^2))^(1/4);
 % dr_RL = 2*p.kapparef/(3*p.p.fr);
-syms vsym drsym l1sym l5sym fysym frsym kapparefsym imag_entry
-eqns = [1/2*fysym*kapparefsym^2*vsym^4 + l1sym*vsym + 1/2*frsym*drsym^2 + 1;...
-    l1sym + 2*fysym*kapparefsym^2*vsym^3;...
-   kapparefsym*vsym*(kapparefsym*l5sym - l1sym) - frsym*drsym;...
-    l5sym + fysym*kapparefsym*vsym^3];
-RLs = solve(eqns == 0, [vsym, drsym, l1sym, l5sym]);
-v_RL = RLs.vsym;
-dr_RL = RLs.drsym;
-l1_RL = RLs.l1sym;
-l5_RL = RLs.l5sym;
-RL_mat = [v_RL, dr_RL, l1_RL, l5_RL];
-complex_check = double(subs(RL_mat,[kapparefsym, frsym, fysym],[p.kapparef, p.fr, p.fy]));
-RL = complex_check(1,:);
+% syms vsym drsym l1sym l5sym fysym frsym kapparefsym imag_entry
+% eqns = [1/2*fysym*kapparefsym^2*vsym^4 + l1sym*vsym + 1/2*frsym*drsym^2 + 1;...
+%     l1sym + 2*fysym*kapparefsym^2*vsym^3;...
+%    kapparefsym*vsym*(kapparefsym*l5sym - l1sym) - frsym*drsym;...
+%     l5sym + fysym*kapparefsym*vsym^3];
+% RLs = solve(eqns == 0, [vsym, drsym, l1sym, l5sym]);
+% v_RL = RLs.vsym;
+% dr_RL = RLs.drsym;
+% l1_RL = RLs.l1sym;
+% l5_RL = RLs.l5sym;
+% RL_mat = [v_RL, dr_RL, l1_RL, l5_RL];
+% complex_check = double(subs(RL_mat,[kapparefsym, frsym, fysym],[p.kapparef, p.fr, p.fy]));
+% RL = complex_check(1,:);
 % p.x0 = [0;RL(1);RL(2);0];
 % p.l0 = [RL(3);0;0;RL(4)];
 
