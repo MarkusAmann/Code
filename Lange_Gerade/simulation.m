@@ -1,13 +1,13 @@
 % clc
 clear all
-close all
+% close all
 
 %% Parameter
-x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
-jlim = 0.8; 
-umax = jlim; umin = -jlim; use_umax = 0;
-t0 = 0; tf = 104.1238; N = 100; fa = 1; fj = 1; sf = 5000; 
-tf_free = 1; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
+x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
+jlim = 0.1; 
+umax = jlim; umin = -jlim; use_umax = 1;
+t0 = 0; tf = 100; N = 100; fa = 1; fj = 1; sf = 5000; 
+tf_free = 0; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; p.sf = sf; 
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.N = N;  
@@ -116,6 +116,7 @@ switch tf_free
         l2_put_t = double(subs(l2_t_num,tsym,sol_mesh));
         l3_put_t = double(subs(l3_t_num,tsym,sol_mesh));
         
+        % ACHTUNG: die Berechnungen gelten nur, wenn j unbeschränkt ist
         % Nullstellen von j_t berechnen
         zero_j = double(solve(j_t_num == 0,tsym))
         % a(t) an den Nullstellen berechnen
@@ -182,7 +183,7 @@ for i=1:length(sol_mesh)
 end
 
 %%
-figure
+figure('Name','sva')
 subplot(3,1,1)
 plot(sol_mesh,sopt)
 ylabel('s_r [m]')
@@ -200,7 +201,7 @@ xlabel('t [s]')
 grid on
 hold on
 
-figure
+figure('Name','adj')
 subplot(3,1,1)
 plot(sol_mesh,l1opt)
 ylabel('l_{1,opt}')
@@ -218,7 +219,7 @@ xlabel('t [s]')
 grid on
 hold on
 
-figure 
+figure('Name','j')
 plot(sol_mesh,jopt)
 ylabel('j_{opt} [m/s^3]')
 xlabel('t [s]')
