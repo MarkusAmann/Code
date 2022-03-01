@@ -1,12 +1,12 @@
 % clc
 clear all
-% close all
+close all
 
 %% Parameter
 x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
-jlim = 0.1; 
-umax = jlim; umin = -jlim; use_umax = 1;
-t0 = 0; tf = 100; N = 100; fa = 1; fj = 1; sf = 5000; 
+jlim = 0.5; 
+umax = jlim; umin = -jlim; use_umax = 0;
+t0 = 0; tf = 50; N = 100; fa = 1; fj = 1; sf = 5000; 
 tf_free = 0; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; p.sf = sf; 
