@@ -6,7 +6,7 @@ close all
 x0 = [0 5 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
 alim = 1.06*1000; kappalim = 1/4*1000; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim];
-t0 = 0; tf = 100; N = 100; fx = 1; fy = 1; fr = 1; fp = 1; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
+t0 = 0; tf = 100; N = 100; fx = 10; fy = 10; fr = 10; fp = 1; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
 tf_free = 1;
 % l4_init = -0.125*0;
 % x0 = [0;5;0;-pi/2]; l0=[kapparef*l4_init;0;-l4_init^2/(fy*5^3);l4_init];

@@ -1,5 +1,5 @@
 function res = bcfcn_free_tf(X0,Xf,param,p)
-
+delta_t = param; 
 srf = Xf(1);
 vf = Xf(2);
 drf = Xf(3);
@@ -14,23 +14,23 @@ kappaf = uf(2);
 
 % H(tf)+1=0 ohne Zustandsbestrafung im Gütefunktional
 % J=tf+int(1/2*fx*ax^2+1/2*fy*kappa^2*v^4)
-% H_tf = 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
-%     l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+% H_tf = 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + delta_t*(l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
+%     l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef)));
 
 % H(tf)+1=0 Bestrafung von dr im Gütefunktional
 % J=tf+int(1/2*fr*dr^2+1/2*fx*ax^2+1/2*fy*kappa^2*v^4)
-H_tf = 1/2*p.fr*drf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
-    l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+H_tf = 1/2*p.fr*drf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + delta_t*(l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
+    l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef)));
 
 % H(tf)+1=0 Bestrafung von psir im Gütefunktional
 % J=tf+int(1/2*fp*psir^2+1/2*fx*ax^2+1/2*fy*kappa^2*v^4)
-% H_tf = 1/2*p.fp*psirf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
-%     l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+% H_tf = 1/2*p.fp*psirf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + delta_t*(l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
+%     l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef)));
 
 % H(tf)+1=0 Bestrafung von dr und psir im Gütefunktional
 % J=tf+int(1/2*fr*dr^2+1/2*fp*psir^2+1/2*fx*ax^2+1/2*fy*kappa^2*v^4)
-% H_tf = 1/2*p.fr*drf^2 + 1/2*p.fp*psirf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
-%     l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+% H_tf = 1/2*p.fr*drf^2 + 1/2*p.fp*psirf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + delta_t*(l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*axf + l3f*vf*sin(psirf) + ...
+%     l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef)));
 
 % sf, drf, psirf sind festgelegt, nur vf ist frei
 % res = [X0(1) - p.x0(1);...
