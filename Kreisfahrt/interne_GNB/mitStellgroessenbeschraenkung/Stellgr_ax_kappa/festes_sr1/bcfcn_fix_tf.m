@@ -50,16 +50,19 @@ uR = uopt(X_internalGNB_R,p);
 axR = uR(1);
 kappaR = uR(2);
 
-% Hamiltonfunktion linker und rechter Rand von t1 für freie t1
-H_L = 1/2*p.fx*axL^2 + 1/2*p.fy*kappaL^2*vL^4 + l1L*vL*cos(psirL)/(1-drL*p.kapparef) + ...
-    l2L*axL + l3L*vL*sin(psirL) + l4L*vL*(kappaL - p.kapparef*cos(psirL)/(1-drL*p.kapparef));
-H_R = 1/2*p.fx*axR^2 + 1/2*p.fy*kappaR^2*vR^4 + l1R*vR*cos(psirR)/(1-drR*p.kapparef) + ...
-    l2R*axR + l3R*vR*sin(psirR) + l4R*vR*(kappaR - p.kapparef*cos(psirR)/(1-drR*p.kapparef));
-H_L - H_R;
+% Hamiltonfunktion linker und rechter Rand von t1 für freie t1 ohne
+% Bestrafung von dr
+% H_L = 1/2*p.fx*axL^2 + 1/2*p.fy*kappaL^2*vL^4 + delta_t1*(l1L*vL*cos(psirL)/(1-drL*p.kapparef) + ...
+%     l2L*axL + l3L*vL*sin(psirL) + l4L*vL*(kappaL - p.kapparef*cos(psirL)/(1-drL*p.kapparef)));
+% H_R = 1/2*p.fx*axR^2 + 1/2*p.fy*kappaR^2*vR^4 + l1R*vR*cos(psirR)/(1-drR*p.kapparef) + ...
+%     l2R*axR + l3R*vR*sin(psirR) + l4R*vR*(kappaR - p.kapparef*cos(psirR)/(1-drR*p.kapparef));
 
-% Hamiltonfunktion tf
-Hf = 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + ...
-    l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+% Hamiltonfunktion linker und rechter Rand von t1 für freie t1 mit
+% Bestrafung von dr
+H_L = 1/2*p.fr*drL^2 + 1/2*p.fx*axL^2 + 1/2*p.fy*kappaL^2*vL^4 + delta_t1*(l1L*vL*cos(psirL)/(1-drL*p.kapparef) + ...
+    l2L*axL + l3L*vL*sin(psirL) + l4L*vL*(kappaL - p.kapparef*cos(psirL)/(1-drL*p.kapparef)));
+H_R = 1/2*p.fr*drR^2 + 1/2*p.fx*axR^2 + 1/2*p.fy*kappaR^2*vR^4 + l1R*vR*cos(psirR)/(1-drR*p.kapparef) + ...
+    l2R*axR + l3R*vR*sin(psirR) + l4R*vR*(kappaR - p.kapparef*cos(psirR)/(1-drR*p.kapparef));
 
 % nur sf ist festgelegt, vf, drf und psirf sind frei
 res = [X0(1) - p.x0(1);... % Anfangswerte

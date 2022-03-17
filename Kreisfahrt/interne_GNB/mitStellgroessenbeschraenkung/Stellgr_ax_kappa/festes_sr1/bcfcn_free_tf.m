@@ -69,8 +69,8 @@ H_R = 1/2*p.fx*axR^2 + 1/2*p.fy*kappaR^2*vR^4 + l1R*vR*cos(psirR)/(1-drR*p.kappa
 H_L - H_R;
 
 % Hamiltonfunktion tf
-Hf = 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + ...
-    l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+Hf = 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + delta_t1*(l1f*vf*cos(psirf)/(1-drf*p.kapparef) + ...
+    l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef)));
 
 % nur sf ist festgelegt, vf, drf und psirf sind frei
 res = [X0(1) - p.x0(1);... % Anfangswerte

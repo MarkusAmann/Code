@@ -6,11 +6,11 @@ close all
 x0 = [0 1 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
 alim = 1.06*1000; kappalim = 1/4*1000; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim];
-t0 = 0; tf = 10; N = 102; fx = 1; fy = 1; kapparef = 0.01; sf = 20; drf = 0; psirf = 0; sr1 = 10; % sr1 ist die Strecke, die nach t1 zurückgelegt worden sein soll
+t0 = 0; tf = 10; N = 102; fx = 1; fy = 1; fr = 1; kapparef = 0.01; sf = 20; drf = 0; psirf = 0; sr1 = 10; % sr1 ist die Strecke, die nach t1 zurückgelegt worden sein soll
 tf_free = 1; t1 = tf/2; 
 % l4_init = -0.125*0;
 % x0 = [0;5;0;-pi/2]; l0=[kapparef*l4_init;0;-l4_init^2/(fy*5^3);l4_init];
-p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf; p.sr1 = sr1;
+p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf; p.sr1 = sr1;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.t1 = t1; p.N = N;  
 
 %% Optimierung
@@ -28,12 +28,15 @@ switch tf_free
         sol = bvp4c(@sys_gesamt_fix_tf, @bcfcn_fix_tf, solinit, bvpoptions, p);
         % optimal states
         nu_tilde = sol.parameters(1);
-        delta_t1_opt = sol.parameters(2);
+        delta_t1_opt = sol.parameters(2)
+        t1_opt = delta_t1_opt*p.t1
+        t_for_interp = linspace(p.t0, p.tf, p.N*100);
+        [x_unique,idx_unique,~] = unique(sol.x);
+        y_unique = sol.y(:,idx_unique);
+        y_interp = interp1(x_unique.',y_unique.',t_for_interp,'spline');
+        sol.x = t_for_interp;
+        sol.y = y_interp.';
         sol_mesh = sol.x;
-        split_idx = [find(diff(sol_mesh)==0) find(diff(sol_mesh)==0)+1];
-        sol_mesh_t1 = delta_t1_opt*sol_mesh(1:split_idx(1));
-        sol_mesh_t2 = sol_mesh(split_idx(2):end) + sol_mesh_t1(end)-sol_mesh(split_idx(2));
-        sol_mesh = [sol_mesh_t1 sol_mesh_t2];
         sopt = sol.y(1,:);
         vopt = sol.y(2,:);
         dropt = sol.y(3,:);
@@ -51,7 +54,7 @@ switch tf_free
         deltat = mean(diff(t));
         p.deltat = deltat;
         init_guess = @(x,region)guess_free_tf(t,region,p);
-        solinit = bvpinit(t,init_guess,[0.1,0.1]); % [nu_tilde, delta_t1, delta_t2]
+        solinit = bvpinit(t,init_guess,[1,1]); % [nu_tilde, delta_t1, delta_t2]
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         % optimal states
         nu_tilde = sol.parameters(1);

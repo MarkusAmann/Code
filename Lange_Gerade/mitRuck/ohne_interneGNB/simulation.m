@@ -6,8 +6,8 @@ close all
 x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
 jlim = 0.5; 
 umax = jlim; umin = -jlim; use_umax = 0;
-t0 = 0; tf = 50; N = 100; fa = 1; fj = 1; sf = 5000; 
-tf_free = 0; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
+t0 = 0; tf = 100; N = 100; fa = 1; fj = 1; sf = 5000; 
+tf_free = 1; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; p.sf = sf; 
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.tf_free = tf_free; p.N = N;  
@@ -162,8 +162,8 @@ switch tf_free
         l1opt = sol.y(4,:);
         l2opt = sol.y(5,:);
         l3opt = sol.y(6,:);
-        delta_opt = sol.parameters;
-        tf_opt = delta_opt*p.tf;
+        delta_opt = sol.parameters
+        tf_opt = delta_opt*p.tf
         sol_mesh = sol_mesh*delta_opt;
 
 %         parameter_eqns = [subs(s_t,tsym,0) - s0;...

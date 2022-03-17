@@ -21,7 +21,7 @@ switch tf_free
         deltat = mean(diff(t));
         p.deltat = deltat;
         init_guess = @(x,region)guess_fix_tf(t,region,p);
-        solinit = bvpinit(t,init_guess,[0.1 0.1]); % [nu_tilde, delta_t1]
+        solinit = bvpinit(t,init_guess,[0.1 0.7]); % [nu_tilde, delta_t1]
         sol = bvp4c(@sys_gesamt_fix_tf, @bcfcn_fix_tf, solinit, bvpoptions, p);
         % optimal states
         nu_tilde = sol.parameters(1);
@@ -56,9 +56,9 @@ switch tf_free
         kappaopt = u(2,:);
         % kappaopt(1) = interp1(t(2:end),kappaopt(2:end),0,'pchip','extrap');
 
-        J_fun = 1/2*p.fr*dropt.^2 + 1/2*p.fx*axopt.^2 + 1/2*p.fy*kappaopt.^2.*vopt.^4;
+%         J_fun = 1/2*p.fr*dropt.^2 + 1/2*p.fx*axopt.^2 + 1/2*p.fy*kappaopt.^2.*vopt.^4;
 %         J_fun = 1/2*p.fx*axopt.^2 + 1/2*p.fy*kappaopt.^2.*vopt.^4;
-        J = trapz(sol_mesh,J_fun) 
+%         J = trapz(sol_mesh,J_fun) + nu_tilde*mean(dropt(split_idx) - p.dr1)
 
     case 1
         t0_1 = linspace(p.t0, p.t1, p.N/2);
@@ -67,12 +67,12 @@ switch tf_free
         deltat = mean(diff(t));
         p.deltat = deltat;
         init_guess = @(x,region)guess_free_tf(t,region,p);
-        solinit = bvpinit(t,init_guess,[0.1,0.5]); % [nu_tilde, delta_t1, delta_t2]
+        solinit = bvpinit(t,init_guess,[0.1,0.5,0.5]); % [nu_tilde, delta_t1, delta_t2]
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         % optimal states
         nu_tilde = sol.parameters(1);
-        delta_t1_opt = sol.parameters(2)
-%         delta_t2_opt = sol.parameters(3);
+        delta_t1_opt = sol.parameters(2);
+        delta_t2_opt = sol.parameters(3);
         sol_mesh = sol.x;
         sopt = sol.y(1,:);
         vopt = sol.y(2,:);
@@ -82,19 +82,8 @@ switch tf_free
         l2opt = sol.y(6,:);
         l3opt = sol.y(7,:);
         l4opt = sol.y(8,:);
-        tf_opt = delta_t1_opt*p.tf
-        sol_mesh = sol_mesh*delta_t1_opt;
-
-        % optimal control inputs
-        for i=1:length(sol_mesh)
-            u(:,i) = uopt(sol.y(:,i),p); % Steuerung
-        end
-        axopt = u(1,:);
-        kappaopt = u(2,:);
-
-        J_fun = 1/2*p.fr*dropt.^2 + 1/2*p.fx*axopt.^2 + 1/2*p.fy*kappaopt.^2.*vopt.^4;
-%         J_fun = 1/2*p.fx*axopt.^2 + 1/2*p.fy*kappaopt.^2.*vopt.^4;
-        J = trapz(sol_mesh,J_fun) + tf_opt
+        tf_opt = delta_opt*p.tf;
+        sol_mesh = sol_mesh*delta_opt;
 end
 
 %%
