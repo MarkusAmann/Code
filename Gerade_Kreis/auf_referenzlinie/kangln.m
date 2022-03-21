@@ -16,3 +16,4 @@ switch region
         f = [0;...
             -(2*p.fy*v^3*p.kapparef_curve^2 + l1)];
 end
+end

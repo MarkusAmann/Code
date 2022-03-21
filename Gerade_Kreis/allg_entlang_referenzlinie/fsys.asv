@@ -1,0 +1,18 @@
+function f = fsys(X,u,p,region)
+ax = u(1);
+kappa = u(2);
+sr = X(1);
+v = X(2);
+dr = X(3);
+psir = X(4);
+
+switch region
+    case 1
+        f = delta_t1*[fsys(x,u,p,region);...% kanonische Gleichungen
+            kangln(X,u,p,region)];
+    case 2 
+        f = delta_t2*[fsys(x,u,p,region);...% kanonische Gleichungen
+            kangln(X,u,p,region)];
+end
+
+end
