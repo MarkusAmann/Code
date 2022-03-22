@@ -4,7 +4,7 @@ close all
 
 %% Parameter
 x0 = [0 10 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
-alim = 1.2; kappalim = 0.2*100; use_umax = 0;
+alim = 2; kappalim = 0.2*100; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim]; use_dr = 1;
 t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 400; drf = 0; psirf = 0; t1 = tf/2; s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
@@ -30,7 +30,7 @@ while error_flag
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
-        warn_message = strcat('Problem using function.', ME.message);
+        warn_message = strcat(ME.message, ' Reinitilization necessary.');
         warning(warn_message);
         error_flag = 1;
         init_order = floor((log10(start_inits)>0).*log10(start_inits));
