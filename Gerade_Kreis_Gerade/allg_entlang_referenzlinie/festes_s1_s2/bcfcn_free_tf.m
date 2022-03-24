@@ -93,28 +93,28 @@ switch p.use_dr
         % H(tf)+1=0 mit Zustandsbestrafung im Gütefunktional
         % J=tf+int(1/2*fx*ax^2+1/2*fy*kappa^2*v^4+1/2*fr*dr^2)
         H_tf = 1/2*p.fr*drf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + ...
-            l1f*vf + l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef_straight*cos(psirf)/(1-drf*p.kapparef_straight));
+            l1f*vf*cos(psirf)/(1-drf*p.kapparef_straight) + l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef_straight*cos(psirf)/(1-drf*p.kapparef_straight));
         H_L_1 = 1/2*p.fr*drL_1^2 + 1/2*p.fx*axL_1^2 + 1/2*p.fy*kappaL_1^2*vL_1^4 + ...
-            l1L_1*vL_1 + l2L_1*axL_1 + l3L_1*vL_1*sin(psirL_1) + l4L_1*vL_1*(kappaL_1 - p.kapparef_straight*cos(psirL_1)/(1-drL_1*p.kapparef_straight));
+            l1L_1*vL_1*cos(psirL_1)/(1-drL_1*p.kapparef_straight) + l2L_1*axL_1 + l3L_1*vL_1*sin(psirL_1) + l4L_1*vL_1*(kappaL_1 - p.kapparef_straight*cos(psirL_1)/(1-drL_1*p.kapparef_straight));
         H_R_1 = 1/2*p.fr*drR_1^2 + 1/2*p.fx*axR_1^2 + 1/2*p.fy*kappaR_1^2*vR_1^4 + ...
-            l1R_1*vR_1 + l2R_1*axR_1 + l3R_1*vR_1*sin(psirR_1) + l4R_1*vR_1*(kappaR_1 - p.kapparef_curve*cos(psirR_1)/(1-drR_1*p.kapparef_curve));
+            l1R_1*vR_1*cos(psirR_1)/(1-drR_1*p.kapparef_curve) + l2R_1*axR_1 + l3R_1*vR_1*sin(psirR_1) + l4R_1*vR_1*(kappaR_1 - p.kapparef_curve*cos(psirR_1)/(1-drR_1*p.kapparef_curve));
         H_L_2 = 1/2*p.fr*drL_2^2 + 1/2*p.fx*axL_2^2 + 1/2*p.fy*kappaL_2^2*vL_2^4 + ...
-            l1L_2*vL_2 + l2L_2*axL_2 + l3L_2*vL_2*sin(psirL_2) + l4L_2*vL_2*(kappaL_2 - p.kapparef_curve*cos(psirL_2)/(1-drL_2*p.kapparef_curve));
+            l1L_2*vL_2*cos(psirL_2)/(1-drL_2*p.kapparef_curve) + l2L_2*axL_2 + l3L_2*vL_2*sin(psirL_2) + l4L_2*vL_2*(kappaL_2 - p.kapparef_curve*cos(psirL_2)/(1-drL_2*p.kapparef_curve));
         H_R_2 = 1/2*p.fr*drR_2^2 + 1/2*p.fx*axR_2^2 + 1/2*p.fy*kappaR_2^2*vR_2^4 + ...
-            l1R_2*vR_2 + l2R_2*axR_2 + l3R_2*vR_2*sin(psirR_2) + l4R_2*vR_2*(kappaR_2 - p.kapparef_straight*cos(psirR_2)/(1-drR_2*p.kapparef_straight));
+            l1R_2*vR_2*cos(psirR_2)/(1-drR_2*p.kapparef_straight) + l2R_2*axR_2 + l3R_2*vR_2*sin(psirR_2) + l4R_2*vR_2*(kappaR_2 - p.kapparef_straight*cos(psirR_2)/(1-drR_2*p.kapparef_straight));
     case 0
         % H(tf)+1=0 ohne Zustandsbestrafung im Gütefunktional
         % J=tf+int(1/2*fx*ax^2+1/2*fy*kappa^2*v^4)
         H_tf = 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + ...
-            l1f*vf + l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef_straight*cos(psirf)/(1-drf*p.kapparef_straight));
+            l1f*vf*cos(psirf)/(1-drf*p.kapparef_straight) + l2f*axf + l3f*vf*sin(psirf) + l4f*vf*(kappaf - p.kapparef_straight*cos(psirf)/(1-drf*p.kapparef_straight));
         H_L_1 = 1/2*p.fx*axL_1^2 + 1/2*p.fy*kappaL_1^2*vL_1^4 + ...
-            l1L_1*vL_1 + l2L_1*axL_1 + l3L_1*vL_1*sin(psirL_1) + l4L_1*vL_1*(kappaL_1 - p.kapparef_straight*cos(psirL_1)/(1-drL_1*p.kapparef_straight));
+            l1L_1*vL_1*cos(psirL_1)/(1-drL_1*p.kapparef_straight) + l2L_1*axL_1 + l3L_1*vL_1*sin(psirL_1) + l4L_1*vL_1*(kappaL_1 - p.kapparef_straight*cos(psirL_1)/(1-drL_1*p.kapparef_straight));
         H_R_1 = 1/2*p.fx*axR_1^2 + 1/2*p.fy*kappaR_1^2*vR_1^4 + ...
-            l1R_1*vR_1 + l2R_1*axR_1 + l3R_1*vR_1*sin(psirR_1) + l4R_1*vR_1*(kappaR_1 - p.kapparef_curve*cos(psirR_1)/(1-drR_1*p.kapparef_curve));
+            l1R_1*vR_1*cos(psirR_1)/(1-drR_1*p.kapparef_curve) + l2R_1*axR_1 + l3R_1*vR_1*sin(psirR_1) + l4R_1*vR_1*(kappaR_1 - p.kapparef_curve*cos(psirR_1)/(1-drR_1*p.kapparef_curve));
         H_L_2 = 1/2*p.fx*axL_2^2 + 1/2*p.fy*kappaL_2^2*vL_2^4 + ...
-            l1L_2*vL_2 + l2L_2*axL_2 + l3L_2*vL_2*sin(psirL_2) + l4L_2*vL_2*(kappaL_2 - p.kapparef_curve*cos(psirL_2)/(1-drL_2*p.kapparef_curve));
+            l1L_2*vL_2*cos(psirL_2)/(1-drL_2*p.kapparef_curve) + l2L_2*axL_2 + l3L_2*vL_2*sin(psirL_2) + l4L_2*vL_2*(kappaL_2 - p.kapparef_curve*cos(psirL_2)/(1-drL_2*p.kapparef_curve));
         H_R_2 = 1/2*p.fx*axR_2^2 + 1/2*p.fy*kappaR_2^2*vR_2^4 + ...
-            l1R_2*vR_2 + l2R_2*axR_2 + l3R_2*vR_2*sin(psirR_2) + l4R_2*vR_2*(kappaR_2 - p.kapparef_straight*cos(psirR_2)/(1-drR_2*p.kapparef_straight));
+            l1R_2*vR_2*cos(psirR_2)/(1-drR_2*p.kapparef_straight) + l2R_2*axR_2 + l3R_2*vR_2*sin(psirR_2) + l4R_2*vR_2*(kappaR_2 - p.kapparef_straight*cos(psirR_2)/(1-drR_2*p.kapparef_straight));
 end
 
 %%
