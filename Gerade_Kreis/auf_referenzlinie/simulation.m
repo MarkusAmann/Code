@@ -10,7 +10,7 @@ close all
 x0 = [0 7].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
 alim = 3; use_umax = 0;
 umax = alim; umin = -alim;
-t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.15; kapparef_curve = 0.15; sf = 30; drf = 0; psirf = 0; t1 = tf/2; s1 = 15; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.15; sf = 30; drf = 0; psirf = 0; t1 = tf/2; s1 = 15; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;

@@ -32,11 +32,15 @@ while error_flag
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
-        warn_message = strcat(ME.message, ' Reinitilization necessary.');
-        warning(warn_message);
-        error_flag = 1;
-        init_order = floor((log10(start_inits)>0).*log10(start_inits));
-        inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits)));
+        if strcmp(ME.identifier,'MATLAB:bvp4c:SingJac')
+            warn_message = strcat(ME.message, ' Reinitilization necessary.');
+            warning(warn_message);
+            error_flag = 1;
+            init_order = floor((log10(start_inits)>0).*log10(start_inits));
+            inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits)));
+        else
+            error(ME.message)
+        end
     end
 end
 % optimal states
@@ -103,7 +107,7 @@ psiopt = cumtrapz(sol_mesh,dot_psi);
 dx_global_opt = vopt.*cos(psiopt);
 dy_global_opt = vopt.*sin(psiopt);
 x_global_opt = cumtrapz(sol_mesh,dx_global_opt);
-y_global_opt = cumtrapz(sol_mesh,dy_global_opt);
+y_global_opt = cumtrapz(sol_mesh,dy_global_opt) + x0(3);
 
 % coordinate transformation of reference curve to global coordinates
 dx_ref = vref.*cos(psiref);
@@ -184,9 +188,10 @@ grid on
 hold on
 
 figure 
-plot(sol_mesh,psiopt)
+plot(sol_mesh,psiopt,sol_mesh,psiref)
 ylabel('\psi_{opt} [rad]')
 xlabel('t [s]')
+legend('\psi_{opt}','\psi_{ref}')
 grid on
 hold on
 

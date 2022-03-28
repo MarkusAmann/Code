@@ -6,7 +6,7 @@ close all
 x0 = [0 10 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
 alim = 2; kappalim = 0.2*100; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim]; use_dr = 1;
-t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 400; drf = 0; psirf = 0; t1 = tf/2; s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = -0.01; sf = 400; drf = 0; psirf = 0; t1 = tf/2; s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;
@@ -21,7 +21,7 @@ t = [t0_1 t1_f];
 deltat = mean(diff(t));
 p.deltat = deltat;
 init_guess = @(x,region)guess_free_tf(x,region,p);
-start_inits = [0.1 12 13];
+start_inits = [-0.1 12 13];
 inits = start_inits;
 error_flag = 1;
 while error_flag
@@ -34,7 +34,7 @@ while error_flag
         warning(warn_message);
         error_flag = 1;
         init_order = floor((log10(start_inits)>0).*log10(start_inits));
-        inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits)));
+        inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits))).*sign(start_inits);
     end
 end
 % optimal states
@@ -102,8 +102,9 @@ ylabel('s_r [m]')
 grid on
 hold on
 subplot(3,1,2)
-plot(sol_mesh,vopt)
+plot(sol_mesh,vopt,sol_mesh,dot_sopt)
 ylabel('v [m/s]')
+legend('v_{opt}','ds_r')
 grid on
 hold on
 subplot(3,1,3)
