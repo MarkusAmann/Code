@@ -1,12 +1,12 @@
 % clc
 clear all
-close all
+% close all
 
 %% Parameter
 x0 = [0 10 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
 alim = 2; kappalim = 0.2*100; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim]; use_dr = 1;
-t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = -0.01; sf = 400; drf = 0; psirf = 0; t1 = tf/2; s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 400; drf = 0; psirf = 0; t1 = tf/2; s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;
@@ -30,11 +30,15 @@ while error_flag
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
-        warn_message = strcat(ME.message, ' Reinitilization necessary.');
-        warning(warn_message);
-        error_flag = 1;
-        init_order = floor((log10(start_inits)>0).*log10(start_inits));
-        inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits))).*sign(start_inits);
+        if strcmp(ME.identifier,'MATLAB:bvp4c:SingJac')
+            warn_message = strcat(ME.message, ' Reinitilization necessary.');
+            warning(warn_message);
+            error_flag = 1;
+            init_order = floor((log10(start_inits)>0).*log10(start_inits));
+            inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits))).*sign(start_inits);
+        else
+            error(ME.message)
+        end
     end
 end
 % optimal states
@@ -95,7 +99,7 @@ x_ref = cumtrapz(sol_mesh,dx_ref);
 y_ref = cumtrapz(sol_mesh,dy_ref);
 
 %%
-figure
+figure(1)
 subplot(3,1,1)
 plot(sol_mesh,sopt)
 ylabel('s_r [m]')
@@ -114,7 +118,7 @@ xlabel('t [s]')
 grid on
 hold on
 
-figure
+figure(2)
 subplot(2,1,1)
 plot(sol_mesh, dropt)
 hold on
@@ -127,7 +131,7 @@ grid on
 ylabel('psi_r_{opt} [rad]')
 xlabel('t [s]')
 
-figure
+figure(3)
 subplot(2,2,1)
 plot(sol_mesh,l1opt)
 ylabel('l_{1,opt}')
@@ -151,7 +155,7 @@ xlabel('t [s]')
 grid on
 hold on
 
-figure 
+figure(4)
 plot(sol_mesh,kappaopt,sol_mesh,kapparef_vec)
 ylabel('\kappa [1/m]')
 xlabel('t [s]')
@@ -159,7 +163,7 @@ legend('\kappa_{opt}','\kappa_{ref}')
 grid on
 hold on
 
-figure 
+figure(5)
 plot(sol_mesh,ayopt,sol_mesh,ayref)
 ylabel('a_y [m/s^2]')
 xlabel('t [s]')
@@ -167,14 +171,14 @@ legend('ay_{opt}','ay_{ref}')
 grid on
 hold on
 
-figure 
+figure(6) 
 plot(sol_mesh,psiopt)
 ylabel('\psi_{opt} [rad]')
 xlabel('t [s]')
 grid on
 hold on
 
-figure 
+figure(7)
 plot(x_global_opt,y_global_opt)
 grid on
 hold on
@@ -183,7 +187,7 @@ ylabel('y position [m]')
 xlabel('x position [m]')
 legend('trajectory', 'reference')
 
-figure
+figure(8)
 subplot(2,1,1)
 plot(sol_mesh, x_global_opt)
 hold on

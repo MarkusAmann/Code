@@ -7,7 +7,7 @@ B = 3.5; % Breite der Fahrbahn
 x0 = [0 10].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
 alim = 2; kappalim = 0.2*100; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim];
-t0 = 0; t1 = 1; t2 = 2; tf = 3; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0; kapparef_curve = 0.1; sf = 150; drf = 0; psirf = 0; s1 = 30; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; t1 = 1; t2 = 2; tf = 3; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0; kapparef_curve = -0.1; sf = 150; drf = 0; psirf = 0; s1 = 30; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 s2 = s1+pi/2*1/kapparef_curve; % Strecke, nach der von Kreis auf Gerade umgeschaltet wird
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.s2 = s2; p.t0 = t0; p.t1 = t1; p.t2 = t2; p.tf = tf; p.B = B;
@@ -23,7 +23,8 @@ t = [t0_1 t1_2 t2_f];
 deltat = mean(diff(t));
 p.deltat = deltat;
 init_guess = @(x,region)guess_free_tf(x,region,p);
-start_inits = [0.1 0.1 10 12 13];
+start_inits = [0.1 0.1 3 5 12];
+start_inits = randn(1,5);
 inits = start_inits;
 error_flag = 1;
 while error_flag
