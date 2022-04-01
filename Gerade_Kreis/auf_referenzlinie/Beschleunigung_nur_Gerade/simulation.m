@@ -1,16 +1,12 @@
 % clc
 clear all
-% close all
-
-% syms v(t) l1
-% eqn = diff(v,t,2) == 2*1/1*0.1^2*v^3 - l1;
-% S = dsolve(eqn);
+close all
 
 %% Parameter
-x0 = [0 2.5].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
+x0 = [0 5].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
 alim = 1; use_umax = 0;
 umax = alim; umin = -alim;
-t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 200; drf = 0; psirf = 0; s1 = 80; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 100; drf = 0; psirf = 0; s1 = 40; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;
@@ -32,8 +28,6 @@ p.deltat = deltat;
 init_guess = @(x,region)guess_free_tf(x,region,p);
 start_inits = [0.1 0.5 12 13];
 inits = start_inits;
-init_order = floor((log10(start_inits)>0).*log10(start_inits));
-inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits))).*sign(start_inits);
 error_flag = 1;
 while error_flag
     try

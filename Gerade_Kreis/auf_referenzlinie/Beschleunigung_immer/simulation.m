@@ -2,10 +2,6 @@
 clear all
 % close all
 
-% syms v(t) l1
-% eqn = diff(v,t,2) == 2*1/1*0.1^2*v^3 - l1;
-% S = dsolve(eqn);
-
 %% Parameter
 x0 = [0 5].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
 alim = 3; use_umax = 0;

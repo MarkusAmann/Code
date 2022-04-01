@@ -1,7 +1,7 @@
 syms fx fy kapparef s0 s1 sf v0 % bekannte symbolische Variablen
 syms t1 tf nu_1 nu_2 l1l a0 % unbekannte symbolische Variablen
 known_vars = [fx fy kapparef s0 s1 sf v0];
-known_vars_num = [1 1 0.1 0 80 200 2.5];
+known_vars_num = [1 1 0.1 0 40 100 5];
 unknwon_vars = [t1 tf nu_1 nu_2 l1l a0];
 
 vr = (2/(3*fy*kapparef^2))^(1/4);
@@ -36,7 +36,7 @@ t1_vec = linspace(0,t1_val,1000);
 t2_vec = linspace(t1_val,tf_val,1000);
 t_vec = [t1_vec t2_vec];
 l1l_vec = l1l_val*ones(size(t1_vec));
-l1r_vec = l1l_val*ones(size(t2_vec)) + 2*nu_1_val;
+l1r_vec = l1l_val*ones(size(t2_vec)) - 2*nu_1_val;
 l1_vec = [l1l_vec l1r_vec];
 l2l_vec = -l1l_vec.*t1_vec - known_vars_num(1)*a0_val;
 l2r_vec = zeros(size(t2_vec));
