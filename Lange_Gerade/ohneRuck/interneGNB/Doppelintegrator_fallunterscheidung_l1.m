@@ -71,7 +71,7 @@ sfct(l1_1,l1_2,tf,t1,a0,v_int_const,s_int_const,p,1) - p.s1;
 sfct(l1_1,l1_2,tf,t1,a0,v_int_const,s_int_const,p,1) - sfct(l1_1,l1_2,tf,t1,a0,v_int_const,s_int_const,p,2);
 vfct(l1_1,l1_2,tf,t1,a0,v_int_const,p,1) - vfct(l1_1,l1_2,tf,t1,a0,v_int_const,p,2);
 afct(l1_1,l1_2,tf,t1,a0,p,1) - afct(l1_1,l1_2,tf,t1,a0,p,2);
-l1fct(l1_1,l1_2,tf,t1,p,1) - l1fct(l1_1,l1_2,tf,t1,p,2) - nu_tilde;
+l1fct(l1_1,l1_2,tf,t1,p,1) - l1fct(l1_1,l1_2,tf,t1,p,2) - 2*nu_tilde;
 H1 - H2 + 1];
 end
 

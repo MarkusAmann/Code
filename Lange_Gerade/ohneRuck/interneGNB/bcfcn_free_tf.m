@@ -5,8 +5,8 @@ delta_t2 = param(3);
 
 X0 = XL(:,1);
 Xf = XR(:,end);
-X_internalGNB_L = XL(:,end);
-X_internalGNB_R = XR(:,1);
+X_internalGNB_L = [XL(1:2,end); XR(3:4,1)];
+X_internalGNB_R = [XR(1:2,1); XL(3:4,end)];
 
 % Endzustand
 sf = Xf(1);
@@ -55,6 +55,6 @@ res = [X0(1) - p.x0(1);...
     l1L - l1R - 2*nu_tilde;... % Transversalitätsbedingung für l1 (l1(t1-) = l1(t1+) + dg/dx|t1*nu_tilde)
     l2L - l2R;...
     sL - p.s1;... % zusätzliche interne Randbedingung
-    H_L - H_R - 1    % Transversalitätsbedingung für Umschaltpunkt
+    H_L - H_R + 1    % Transversalitätsbedingung für Umschaltpunkt
     ];
 end

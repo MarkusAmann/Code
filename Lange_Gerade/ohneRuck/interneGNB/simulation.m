@@ -1,7 +1,7 @@
 % clc
-% Doppelintegrator_fallunterscheidung_l1
+Doppelintegrator_fallunterscheidung_l1
 clear all
-close all
+% close all
 
 %% Parameter
 x0 = [0 10].'; l0 = [-0.5 0].'; %l0 = 0.1*randn(3,1);
