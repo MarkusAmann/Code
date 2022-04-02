@@ -4,9 +4,8 @@ delta_t1 = param(2);
 
 X0 = XL(:,1);
 Xf = XR(:,end);
-X_internalGNB_L = XL(:,end);
-X_internalGNB_R = XR(:,1);
-
+X_internalGNB_L = [XL(1:3,end); XR(4:6,1)];
+X_internalGNB_R = [XR(1:3,1); XL(4:6,end)];
 % Endzustand
 sf = Xf(1);
 vf = Xf(2);
