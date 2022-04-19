@@ -1,15 +1,15 @@
 % clc
 clear all
-% close all
+close all
 
 %% Parameter
-x0 = [0 5].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
-alim = 1; use_umax = 0;
-umax = alim; umin = -alim;
-t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 200; drf = 0; psirf = 0; s1 = 80; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+x0 = [0 5 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
+jlim = 3; use_umax = 0;
+umax = jlim; umin = -jlim;
+t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 1; fj = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 200; s1 = 50; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
-p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
-p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;
+p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fj = fj; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
+p.sf = sf; p.s1 = s1; p.t1 = t1;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.N = N;  
 
 %% Ruhelage 
@@ -26,14 +26,14 @@ t = [t0_1 t1_f];
 deltat = mean(diff(t));
 p.deltat = deltat;
 init_guess = @(x,region)guess_free_tf(x,region,p);
-start_inits = [0.1 0.5 12 13];
+start_inits = [-0.1 12 13];
 inits = start_inits;
 init_order = floor((log10(start_inits)>0).*log10(start_inits));
 inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits))).*sign(start_inits);
 error_flag = 1;
 while error_flag
     try
-        solinit = bvpinit(t,init_guess,inits); % [nu_tilde1, delta_t1, delta_t2, nu_tilde2]
+        solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
@@ -52,12 +52,13 @@ end
 sol_mesh = sol.x;
 sopt = sol.y(1,:);
 vopt = sol.y(2,:);
-l1opt = sol.y(3,:);
-l2opt = sol.y(4,:);
-nu_tilde1 = sol.parameters(1);
-nu_tilde2 = sol.parameters(2);
-delta_t1_opt = sol.parameters(3)
-delta_t2_opt = sol.parameters(4)
+axopt = sol.y(3,:);
+l1opt = sol.y(4,:);
+l2opt = sol.y(5,:);
+l3opt = sol.y(6,:);
+nu_tilde = sol.parameters(1);
+delta_t1_opt = sol.parameters(2)
+delta_t2_opt = sol.parameters(3)
 t1_opt = delta_t1_opt*p.t1
 tf_opt = delta_t1_opt*p.t1 + delta_t2_opt*(p.tf - p.t1)
 split_idx = [find(diff(sol_mesh)==0) find(diff(sol_mesh)==0)+1];
@@ -70,9 +71,9 @@ sol_mesh = [sol_mesh_1 sol_mesh_2];
 for i=1:length(sol_mesh)
     u(:,i) = uopt(sol.y(:,i),p); % Steuerung
 end
-axopt = u;
+jopt = u;
 kappaopt = [ones(size(sol_mesh_1))*p.kapparef_straight ones(size(sol_mesh_2))*p.kapparef_curve];
-J_fun = 1/2*p.fx*axopt.^2+1/2*p.fy*kappaopt.^2.*vopt.^4;
+J_fun = 1/2*p.fx*jopt.^2+1/2*p.fy*kappaopt.^2.*vopt.^4;
 J = trapz(sol_mesh,J_fun) + tf_opt 
 
 %%
@@ -120,21 +121,25 @@ xlabel('t [s]')
 grid on
 hold on
 subplot(4,1,4)
-plot(sol_mesh,gradient(axopt,sol_mesh))
-ylabel('j_x_{opt} [m/s^3]')
+plot(sol_mesh,jopt)
+ylabel('j_x_{opt} [m/s^2]')
 xlabel('t [s]')
 grid on
 hold on
 
 figure(2)
-subplot(2,1,1)
+subplot(3,1,1)
 plot(sol_mesh,l1opt)
 ylabel('l_{1,opt}')
 grid on
 hold on
-subplot(2,1,2)
+subplot(3,1,2)
 plot(sol_mesh,l2opt)
 ylabel('l_{2,opt}')
+grid on
+subplot(3,1,3)
+plot(sol_mesh,l3opt)
+ylabel('l_{3,opt}')
 grid on
 hold on
 
@@ -189,9 +194,5 @@ ylabel('v [m/s]')
 xlabel('s [m]')
 
 
-%% Interpolation von ax_min und vmax s1 = [10 20 30 40 50 80 100 120 140 160 180 190] bei sf = 200, kapparef = 0.1, v0 = 2.5, fx = fy = 1
-t1_opt_vec = [3.2162 5.45145 7.21096 8.72289 10.0552 13.4143 15.3119 17.0335 18.6164 20.0908 21.4764 22.1404];
-axmin = [-0.692955 -1.02408 -1.17919 -1.27068 -1.33321 -1.4427 -1.48559 -1.51701 -1.5412 -1.56058 -1.57653 -1.58352];
-t_vmax = [1.8269 2.8926 3.7507 4.50979 5.13018 6.84405 7.76848 8.6133 9.41375 10.1137 10.8509 11.1455];
-vmax = [3.3369 4.1691 4.9007 5.54186 6.12171 7.60788 8.45722 9.22925 9.94209 10.6072 11.2335 11.5338];
-s1_vec = [10 20 30 40 50 80 100 120 140 160 180 190];
+
+

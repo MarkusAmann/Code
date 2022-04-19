@@ -1,12 +1,15 @@
 % clc
 clear all
 % close all
+load('sol.mat');
+sol.y = [sol.y(1:2,:); sol.y(5:6,:)];
+sol.yp = [sol.yp(1:2,:); sol.yp(5:6,:)];
 
 %% Parameter
 x0 = [0 5].'; l0 = [0 0].'; %l0 = 0.1*randn(4,1);
 alim = 3; use_umax = 0;
 umax = alim; umin = -alim;
-t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 100; drf = 0; psirf = 0; s1 = 40; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 2; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 200; drf = 0; psirf = 0; s1 = 50; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;
@@ -29,6 +32,7 @@ init_guess = @(x,region)guess_free_tf(x,region,p);
 start_inits = [-0.1 12 13];
 inits = start_inits;
 error_flag = 1;
+% sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, sol, bvpoptions, p);
 while error_flag
     try
         solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
@@ -172,6 +176,12 @@ grid on
 ylabel('y position [m]')
 xlabel('t [s]')
 
+figure(8)
+plot(sopt,vopt)
+hold on
+grid on
+ylabel('v [m/s]')
+xlabel('s [m]')
 
 
 

@@ -8,6 +8,8 @@ X0 = XL(:,1);
 Xf = XR(:,end);
 X_internalGNB_L = [XL(1:2,end); XR(3:4,1)];
 X_internalGNB_R = [XR(1:2,1); XL(3:4,end)];
+% X_internalGNB_L = XL(:,end);
+% X_internalGNB_R = XR(:,1);
 
 % Endzustand
 srf = Xf(1);
