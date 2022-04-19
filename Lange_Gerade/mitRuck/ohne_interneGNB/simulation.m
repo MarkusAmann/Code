@@ -6,7 +6,7 @@ close all
 x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
 jlim = 0.5; 
 umax = jlim; umin = -jlim; use_umax = 0;
-t0 = 0; tf = 100; N = 100; fa = 1; fj = 1; sf = 5000; 
+t0 = 0; tf = 1; N = 100; fa = 1; fj = 1; sf = 100; 
 tf_free = 1; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; p.sf = sf; 
@@ -85,6 +85,7 @@ switch tf_free
         l1opt = sol.y(4,:);
         l2opt = sol.y(5,:);
         l3opt = sol.y(6,:);
+        tf_opt = tf;
 
         parameter_eqns = [subs(s_t,tsym,0) - s0;...
             subs(v_t,tsym,0) - v0;...
@@ -181,6 +182,10 @@ end
 for i=1:length(sol_mesh)
    jopt(:,i) = uopt(sol.y(:,i),p); % Steuerung
 end
+
+J_fun_2 = 1/2*fj*jopt.^2 + 1/2*fa*aopt.^2;
+J_2 = trapz(sol_mesh,J_fun_2) + tf_opt*p.tf_free;
+fprintf('l1: %f\ntf: %f\nJ: %f\n',l1opt(1),tf_opt,J_2)
 
 %%
 figure('Name','sva')
