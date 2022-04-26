@@ -13,10 +13,10 @@ sf = 200;   % Länge der Gerade
 s0 = 0; v0 = 1; vf = 0; a0 = 0; af = 0; tf = 40;
 var_num = [fa fj sf s0 v0 vf a0 af tf];
 
-c2_sym = c1_sym*tf_sym;
-cs_sym = s0_sym - a0_sym*fj_sym/fa_sym - c1_sym*tf_sym*fj_sym/fa_sym^2;
-cv_sym = v0_sym + a0_sym*sqrt(fj_sym/fa_sym) + c1_sym*tf_sym*sqrt(fj_sym/fa_sym^3);
-eqns = [k1_sym*sqrt(fa_sym/fj_sym)*exp(sqrt(fa_sym/fj_sym)*tf_sym) + c1_sym/fa_sym;...
+c2_sym = -af_sym*fa_sym + c1_sym*tf_sym + k1_sym*fa_sym*exp(sqrt(fa_sym/fj_sym)*tf_sym);
+cs_sym = s0_sym - a0_sym*fj_sym/fa_sym - c2_sym*fj_sym/fa_sym^2;
+cv_sym = v0_sym + a0_sym*sqrt(fj_sym/fa_sym) + c2_sym*sqrt(fj_sym/fa_sym^3);
+eqns = [k1_sym*sqrt(fj_sym/fa_sym)*exp(sqrt(fa_sym/fj_sym)*tf_sym) + c1_sym*tf_sym^2/(2*fa_sym) - c2_sym*tf_sym/fa_sym + cv_sym - vf_sym;...
     k1_sym*fj_sym/fa_sym*exp(sqrt(fa_sym/fj_sym)*tf_sym) + c1_sym*tf_sym^3/(6*fa_sym) - c2_sym*tf_sym^2/(2*fa_sym) + cv_sym*tf_sym + cs_sym - sf_sym];
 S = solve(eqns == 0,[c1_sym, k1_sym]);
 c1 = double(subs(S.c1_sym,var_sym,var_num));

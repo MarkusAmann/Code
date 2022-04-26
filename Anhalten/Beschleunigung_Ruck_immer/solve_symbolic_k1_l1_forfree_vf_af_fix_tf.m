@@ -10,7 +10,7 @@ fj = 1;            % Gewichtung Ruck.
 
 sf = 200;   % Länge der Gerade  
 
-s0 = 0; v0 = 1; vf = 0; a0 = 0; af = 0; tf = 40;
+s0 = 0; v0 = 10; vf = 0; a0 = 0; af = 0; tf = 40;
 var_num = [fa fj sf s0 v0 vf a0 af tf];
 
 c2_sym = c1_sym*tf_sym;
