@@ -2,16 +2,23 @@
 clear all
 % close all
 
-
 %% Parameter
-x0 = [0 5 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
+x0 = [0 1 0 0].'; l0 = [0 0 0 0].'; %l0 = 0.1*randn(4,1);
 alim = 2; kappalim = 0.2*100; use_umax = 0;
 umax = [alim;kappalim]; umin = -[alim;kappalim]; use_dr = 1;
-t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.05; sf = 300; drf = 0; psirf = 0; t1 = tf/2; s1 = 40; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; tf = 2; N = 100; fx = 1; fy = 1; fr = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 700; drf = 0; psirf = 0; t1 = tf/2; s1 = 200; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fr = fr; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.drf = drf; p.psirf = psirf; p.s1 = s1; p.t1 = t1;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.N = N; p.use_dr = use_dr;
+
+%% Ruhelage für Kreisfahrt mit Querdynamik und Bestrafung von dr
+v_RL = (2/(3*p.fy*p.kapparef_curve^2))^(1/4);
+dr_RL = (p.fy*p.kapparef_curve^3*v_RL^4)/(p.fr);
+l1_RL = -2*p.fy*p.kapparef_curve^2*v_RL;
+l4_RL = -p.fy*p.kapparef_curve*v_RL^3;
+kappa_RL = p.kapparef_curve/(1-dr_RL*p.kapparef_curve);
+ay_RL = kappa_RL*v_RL^2;
 
 %% Optimierung
 bvpoptions = bvpset('RelTol',1e-5,'Stats','on','Nmax',5e4);
