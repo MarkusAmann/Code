@@ -1,12 +1,12 @@
 % clc
 clear all
-close all
+% close all
 
 %% Parameter
-x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
+x0 = [0 10 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
 jlim = 0.5; 
 umax = jlim; umin = -jlim; use_umax = 0;
-t0 = 0; tf = 1; N = 100; fa = 1; fj = 1; sf = 100; 
+t0 = 0; tf = 1; N = 100; fa = 1; fj = 1; sf = 1000; 
 tf_free = 1; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; p.sf = sf; 
@@ -188,7 +188,8 @@ J_2 = trapz(sol_mesh,J_fun_2) + tf_opt*p.tf_free;
 fprintf('l1: %f\ntf: %f\nJ: %f\n',l1opt(1),tf_opt,J_2)
 
 %%
-figure('Name','sva')
+% figure('Name','sva')
+figure(4)
 subplot(3,1,1)
 plot(sol_mesh,sopt)
 ylabel('s_r [m]')
@@ -206,7 +207,8 @@ xlabel('t [s]')
 grid on
 hold on
 
-figure('Name','adj')
+% figure('Name','adj')
+figure(5)
 subplot(3,1,1)
 plot(sol_mesh,l1opt)
 ylabel('l_{1,opt}')
@@ -224,7 +226,8 @@ xlabel('t [s]')
 grid on
 hold on
 
-figure('Name','j')
+% figure('Name','j')
+figure(6)
 plot(sol_mesh,jopt)
 ylabel('j_{opt} [m/s^3]')
 xlabel('t [s]')

@@ -5,10 +5,10 @@ syms c1 c2 cv cs k1 k2;
 syms tf;
 
 %% hier parameter vorgeben
-fa = 1;            % Gewichtung Längsbeschleunigung
+fa = 0.001;            % Gewichtung Längsbeschleunigung
 fj = 1;            % Gewichtung Ruck.
 
-sf = 500;   % Länge der Gerade  
+sf = 1000;   % Länge der Gerade  
 
 s0 = 0; v0 = 10; a0 = 0; vf = 0; af = 0;
 

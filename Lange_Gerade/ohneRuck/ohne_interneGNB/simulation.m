@@ -1,13 +1,13 @@
 % clc
-Doppelintegrator_mit_sf
+% Doppelintegrator_mit_sf
 clear all
 % close all
 
 %% Parameter
-x0 = [0 10].'; l0 = [0 0].'; %l0 = 0.1*randn(3,1);
+x0 = [0 1].'; l0 = [0 0].'; %l0 = 0.1*randn(3,1);
 alim = 3; 
 umax = alim; umin = -alim; use_umax = 0;
-t0 = 0; tf = 10; N = 100; fa = 1; sf = 100; vf = 20;
+t0 = 0; tf = 1; N = 100; fa = 1; sf = 100; vf = 20;
 tf_free = 1; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.sf = sf; p.vf = vf;
@@ -58,6 +58,7 @@ J = trapz(sol_mesh,J_fun) + tf_opt
 
 %%
 % figure('Name','sva')
+figure
 subplot(3,1,1)
 plot(sol_mesh,sopt,':','LineWidth',2)
 ylabel('s_r [m]')
@@ -76,6 +77,7 @@ grid on
 hold on
 
 % figure('Name','adj')
+figure
 subplot(2,1,1)
 plot(sol_mesh,l1opt,':','LineWidth',2)
 ylabel('l_{1,opt}')
