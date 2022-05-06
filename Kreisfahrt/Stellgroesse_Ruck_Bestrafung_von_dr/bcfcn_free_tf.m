@@ -14,16 +14,18 @@ uf = uopt(Xf,p);
 jf = uf(1);
 kappaf = uf(2);
 
-% H(tf)+1=0 ohne Zustandsbestrafung im Gütefunktional
-% J=tf+int(1/2*fj*j^2+1/2*fa*a^2+1/2*fy*kappa^2*v^4)
-H_tf = 1/2*p.fj*jf^2 + 1/2*p.fa*af^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*af + l3f*jf + l4f*vf*sin(psirf) + ...
-    l5f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
-
-% H(tf)+1=0 Bestrafung von dr im Gütefunktional
-% J=tf+int(1/2*fj*j^2+1/2*fa*a^2+1/2*fy*kappa^2*v^4+1/2*fr*dr^2)
-H_tf = 1/2*p.fr*drf^2 + 1/2*p.fj*jf^2 + 1/2*p.fa*af^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*af + l3f*jf + l4f*vf*sin(psirf) + ...
-    l5f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
-
+switch p.use_dr
+    case 0
+        % H(tf)+1=0 ohne Zustandsbestrafung im Gütefunktional
+        % J=tf+int(1/2*fj*j^2+1/2*fa*a^2+1/2*fy*kappa^2*v^4)
+        H_tf = 1/2*p.fj*jf^2 + 1/2*p.fa*af^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*af + l3f*jf + l4f*vf*sin(psirf) + ...
+            l5f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+    case 1
+        % H(tf)+1=0 Bestrafung von dr im Gütefunktional
+        % J=tf+int(1/2*fj*j^2+1/2*fa*a^2+1/2*fy*kappa^2*v^4+1/2*fr*dr^2)
+        H_tf = 1/2*p.fr*drf^2 + 1/2*p.fj*jf^2 + 1/2*p.fa*af^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf*cos(psirf)/(1-drf*p.kapparef) + l2f*af + l3f*jf + l4f*vf*sin(psirf) + ...
+            l5f*vf*(kappaf - p.kapparef*cos(psirf)/(1-drf*p.kapparef));
+end
 % sf, drf, psirf sind festgelegt, vf und af sind frei
 % res = [X0(1) - p.x0(1);...
 %     X0(2) - p.x0(2);...
