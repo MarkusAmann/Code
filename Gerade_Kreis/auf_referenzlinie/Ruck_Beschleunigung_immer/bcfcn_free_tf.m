@@ -46,10 +46,10 @@ jR = uopt(X_internalGNB_R,p);
 kappaR = p.kapparef_curve; % Kurve
 
 % H(tf)+1=0 ohne Zustandsbestrafung im Gütefunktional
-% J=tf+int(1/2*fx*ax^2+1/2*fy*kappa^2*v^4)
-H_tf = 1/2*p.fj*jf^2 + 1/2*p.fx*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf + l2f*axf + l3f*jf;
-H_L = 1/2*p.fj*jL^2 + 1/2*p.fx*axL^2 + 1/2*p.fy*kappaL^2*vL^4 + l1L*vL + l2L*axL + l3L*jL;
-H_R = 1/2*p.fj*jR^2 + 1/2*p.fx*axR^2 + 1/2*p.fy*kappaR^2*vR^4 + l1R*vR + l2R*axR + l3R*jR;
+% J=tf+int(1/2*fa*ax^2+1/2*fy*kappa^2*v^4)
+H_tf = 1/2*p.fj*jf^2 + 1/2*p.fa*axf^2 + 1/2*p.fy*kappaf^2*vf^4 + l1f*vf + l2f*axf + l3f*jf;
+H_L = 1/2*p.fj*jL^2 + 1/2*p.fa*axL^2 + 1/2*p.fy*kappaL^2*vL^4 + l1L*vL + l2L*axL + l3L*jL;
+H_R = 1/2*p.fj*jR^2 + 1/2*p.fa*axR^2 + 1/2*p.fy*kappaR^2*vR^4 + l1R*vR + l2R*axR + l3R*jR;
 
 % sf ist festgelegt, vf, axf sind frei
 res = [X0(1) - p.x0(1);...

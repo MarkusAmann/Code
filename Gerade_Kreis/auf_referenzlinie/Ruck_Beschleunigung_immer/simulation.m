@@ -1,14 +1,14 @@
 % clc
 clear all
-close all
+% close all
 
 %% Parameter
-x0 = [0 5 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
+x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
 jlim = 3; use_umax = 0;
 umax = jlim; umin = -jlim;
-t0 = 0; t1 = 1; tf = 2; N = 100; fx = 1; fy = 1; fj = 1; kapparef_straight = 0.0; kapparef_curve = 0.1; sf = 200; s1 = 50; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; t1 = 1; tf = 2; N = 100; fa = 1; fy = 1; fj = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 700; s1 = 200; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 
-p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fx = fx; p.fy = fy; p.fj = fj; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
+p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fy = fy; p.fj = fj; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.s1 = s1; p.t1 = t1;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.N = N;  
 
@@ -73,7 +73,7 @@ for i=1:length(sol_mesh)
 end
 jopt = u;
 kappaopt = [ones(size(sol_mesh_1))*p.kapparef_straight ones(size(sol_mesh_2))*p.kapparef_curve];
-J_fun = 1/2*p.fx*jopt.^2+1/2*p.fy*kappaopt.^2.*vopt.^4;
+J_fun = 1/2*p.fj*jopt.^2+1/2*p.fa*axopt.^2+1/2*p.fy*kappaopt.^2.*vopt.^4;
 J = trapz(sol_mesh,J_fun) + tf_opt 
 
 %%
@@ -137,6 +137,7 @@ subplot(3,1,2)
 plot(sol_mesh,l2opt)
 ylabel('l_{2,opt}')
 grid on
+hold on
 subplot(3,1,3)
 plot(sol_mesh,l3opt)
 ylabel('l_{3,opt}')
