@@ -1,11 +1,11 @@
 % clc
 clear all
-% close all
+close all
 
 %% Parameter
 jlim = 1.06*1000; dkappalim = 1/4*1000; use_umax = 0; use_dr = 1;
 umax = [jlim;dkappalim]; umin = -[jlim;dkappalim];
-t0 = 0; t1 = 1; tf = 2; N = 100; fr = 1; fax = 1; fay = 1; fjx = 1; fjy = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 300; s1 = 200; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; t1 = 1; tf = 2; N = 100; fr = 1; fax = 1; fay = 1; fjx = 1; fjy = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 400; s1 = 200; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 drf = 0; psirf = 0;
 x0 = [0 1 0 0 0 kapparef_straight].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
 
@@ -105,7 +105,7 @@ psiopt = cumtrapz(sol_mesh,dot_psi);
 dx_global_opt = vopt.*cos(psiopt);
 dy_global_opt = vopt.*sin(psiopt);
 x_global_opt = cumtrapz(sol_mesh,dx_global_opt);
-y_global_opt = cumtrapz(sol_mesh,dy_global_opt);
+y_global_opt = cumtrapz(sol_mesh,dy_global_opt) + p.x0(4);
 
 % coordinate transformation of reference curve to global coordinates
 dx_ref = vref.*cos(psiref);
