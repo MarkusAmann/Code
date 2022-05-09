@@ -3,10 +3,10 @@ clear all
 % close all
 
 %% Parameter
-x0 = [0 1 0 0 0].'; l0 = [0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
+x0 = [0 5 0 0 0].'; l0 = [0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
 jlim = 1.06*1000; kappalim = 1/4*1000; use_umax = 0; use_dr = 1;
 umax = [jlim;kappalim]; umin = -[jlim;kappalim];
-t0 = 0; tf = 1; N = 100; fj = 1; fa = 1; fy = 1; fr = 1; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
+t0 = 0; tf = 1; N = 100; fj = 1; fa = 1; fy = 1; fr = 0.01; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
 tf_free = 1;
 % l4_init = -0.125*0;
 % x0 = [0;5;0;-pi/2]; l0=[kapparef*l4_init;0;-l4_init^2/(fy*5^3);l4_init];
@@ -58,6 +58,8 @@ switch tf_free
         init_guess = @(x)guess_free_tf(t,p);
         start_inits = [10];
         inits = start_inits;
+        init_order = floor((log10(start_inits)>0).*log10(start_inits));
+        inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(start_inits))).*sign(start_inits);
         error_flag = 1;
         while error_flag
             try
