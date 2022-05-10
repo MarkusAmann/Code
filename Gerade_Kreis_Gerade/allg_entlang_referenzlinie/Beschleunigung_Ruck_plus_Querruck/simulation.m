@@ -1,11 +1,11 @@
 % clc
-clear all
+% clear all
 close all
 
 %% Parameter
 jlim = 1.06*1000; dkappalim = 1/4*1000; use_umax = 0; use_dr = 1;
 umax = [jlim;dkappalim]; umin = -[jlim;dkappalim];
-t0 = 0; t1 = 1; t2 = 2; tf = 3; N = 100; fr = 1; fax = 1; fay = 1; fjx = 1; fjy = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 600; s1 = 50; s2 = 270; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+t0 = 0; t1 = 1; t2 = 2; tf = 3; N = 100; fr = 1; fax = 1; fay = 1; fjx = 1; fjy = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 600; s1 = 50; s2 = 400; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
 drf = 0; psirf = 0;
 x0 = [0 9 0 0 0 kapparef_straight].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
 
@@ -38,7 +38,8 @@ inits = start_inits;
 error_flag = 1;
 while error_flag
     try
-        solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
+        solinit = bvpinit(t,init_guess,inits); % [nu_tilde1, nu_tilde2, delta_t1, delta_t2, delta_t3]
+        solinit = bvpinit(sol,[p.t0 p.tf]);
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
@@ -53,6 +54,7 @@ while error_flag
         end
     end
 end
+
 % optimal states
 sol_mesh = sol.x;
 sopt = sol.y(1,:);
