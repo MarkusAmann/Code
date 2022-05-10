@@ -1,11 +1,17 @@
 % clc
-clear all
-% close all
+use_solution_as_init = 1;
+close_figs = 0;
+if ~use_solution_as_init
+    clear all
+end
+if close_figs 
+    close all
+end
 
 %% Parameter
-jlim = 1.06*1000; dkappalim = 1/4*1000; use_umax = 0; use_dr_min_dr1 = 0; 
+jlim = 1.06*1000; dkappalim = 1/4*1000; use_umax = 0; use_dr_min_dr1 = 1; 
 umax = [jlim;dkappalim]; umin = -[jlim;dkappalim];
-t0 = 0; t1 = 1; tf = 2; N = 100; fr = 1; fax = 1; fay = 1; fjx = 1; fjy = 1; kapparef = 0.0; sf = 300; s1 = 150; drf = 1; psirf = 0; dr1 = 1;
+t0 = 0; t1 = 1; tf = 2; N = 100; fr = 1; fax = 1; fay = 1; fjx = 1; fjy = 100; kapparef = 0.0; sf = 300; s1 = 150; drf = 1; psirf = 0; dr1 = 1;
 x0 = [0 1 0 0 0 kapparef].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.use_dr_min_dr1 = use_dr_min_dr1; p.fr = fr; p.fax = fax; p.fay = fay; p.fjx = fjx; p.fjy = fjy; p.kapparef = kapparef;  
@@ -28,7 +34,11 @@ inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(
 error_flag = 1;
 while error_flag
     try
-        solinit = bvpinit(t,init_guess,inits); % [nu_tilde1, nu_tilde2, delta_t1, delta_t2]
+        if use_solution_as_init
+            solinit = bvpinit(sol,[p.t0 p.tf]);
+        else
+            solinit = bvpinit(t,init_guess,inits); % [nu_tilde1, nu_tilde2, delta_t1, delta_t2]
+        end
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
@@ -70,6 +80,9 @@ sol_mesh = [sol_mesh_1 sol_mesh_2];
 
 %%
 % optimal control inputs
+if ~isempty(u)
+    clear u
+end
 for i=1:length(sol_mesh)
     u(:,i) = uopt(sol.y(:,i),p); % Steuerung
 end

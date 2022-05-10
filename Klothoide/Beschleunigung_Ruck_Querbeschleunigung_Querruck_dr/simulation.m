@@ -6,7 +6,7 @@ close all
 jlim = 1.06*1000; dkappalim = 1/4*1000; use_umax = 0; use_dr = 1;
 umax = [jlim;dkappalim]; umin = -[jlim;dkappalim];
 t0 = 0; tf = 1; N = 100; fjy = 1; fjx = 1; fax = 1; fay = 1; fr = 0.01; kappa_ = 1e-4; kapparef0 = 0.0; sf = 300; drf = 0; psirf = 0;
-x0 = [0 5 0 0 0 kapparef0].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
+x0 = [0 1 0 0 0 kapparef0].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.use_dr = use_dr; p.fjx = fjx; p.fjy = fjy; p.fax = fax; p.fay = fay; p.fr = fr; p.kappa_ = kappa_; p.kapparef0 = kapparef0; 
 p.sf = sf; p.drf = drf; p.psirf = psirf;
