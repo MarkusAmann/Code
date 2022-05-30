@@ -5,17 +5,17 @@ syms c1 c2 cv cs k1 k2;
 syms tf;
 
 %% hier parameter vorgeben
-fa = 1;            % Gewichtung Längsbeschleunigung
+fa = 10;            % Gewichtung Längsbeschleunigung
 fj = 1;            % Gewichtung Ruck.
 
-s1 = 200;   % Länge der Gerade vor der Ampel
-s2 = 300;   % Länge der Gerade nach der Ampel
+s1 = 350;   % Länge der Gerade vor der Ampel
+s2 = 250;   % Länge der Gerade nach der Ampel
 s_n = [s1 s2];
 t0 = 0;
 t1 = 40;
 t2 = 60;
 
-s0 = 0; v0 = 1; vf = 0; a0 = 0; af = 0; tf = t1; sf = s1;
+s0 = 0; v0 = 15; vf = 0; a0 = 0; af = 0; tf = t1; sf = s1;
 
 %% Initialisierung von Lösungsvektoren
 t_vec = []; j_vec = []; a_vec = []; v_vec = []; s_vec = []; l1_vec = []; l2_vec = []; l3_vec = []; kappa_vec = []; ay_vec = []; dot_psi_vec = []; psi_vec = [];
@@ -151,6 +151,49 @@ fprintf('l1_l: %f\ntf: %f\nJ: %f\n',c1_sol,t_vec(end),J_1)
 % t_vec(idmin);
 
 %%
+figure(11)
+% subplot(2,1,1)
+% plot(t_vec,s_vec,'-.','Linewidth',2)
+% ylabel('s_r [m]')
+% xlabel('t [s]')
+% grid on
+% hold on
+subplot(2,1,1)
+plot(t_vec,v_vec,'-.','Linewidth',2)
+ylabel('v [m/s]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,1,2)
+plot(t_vec,a_vec,'-.','Linewidth',2)
+ylabel('a_x [m/s^2]')
+xlabel('t [s]')
+hold on
+grid on
+subplot(2,2,4)
+plot(t_vec,j_vec,'-.','Linewidth',2)
+ylabel('j_x [m/s^3]')
+xlabel('t [s]')
+grid on
+hold on
+
+figure(22)
+subplot(2,1,1)
+plot(t_vec,l1_vec,'-.','Linewidth',2)
+ylabel('l_{1,opt}')
+grid on
+hold on
+subplot(2,1,2)
+plot(t_vec,l2_vec,'-.','Linewidth',2)
+ylabel('l_{2,opt}')
+grid on
+hold on
+% subplot(3,1,3)
+% plot(t_vec,l3_vec,'-','Linewidth',2)
+% ylabel('l_{3,opt}')
+% grid on
+% hold on
+
 figure(1)
 subplot(4,1,1)
 plot(t_vec,s_vec)

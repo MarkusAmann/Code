@@ -1,16 +1,23 @@
 % clc
-clear all
-close all
+use_solution_as_init = 1;
+close_figs = 0;
+if close_figs 
+    close all
+end
+if ~use_solution_as_init
+    clearvars -except use_solution_as_init close_figs
+end
+
 
 %% Parameter
-jlim = 1.06*1000; dkappalim = 1/4*1000; use_umax = 0; use_dr = 1;
+jlim = 10*1; dkappalim = 1*0.001; use_umax = 0; use_dr = 1;
 umax = [jlim;dkappalim]; umin = -[jlim;dkappalim];
-t0 = 0; t1 = 1; tf = 2; N = 100; fjy = 1; fjx = 1; fax = 1; fay = 1; fr = 1; kapparef_straight = 0; kappa_ = 1e-4; kapparef0 = 0; s1 = 100; 
-sf = 200; drf = 0; psirf = 0;
-x0 = [0 1 0 0 0 kapparef_straight].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
+t0 = 0; t1 = 1; tf = 2; N = 100; fjy = 1; fjx = 1; fax = 1; fay = 1; fr = 1; kapparef_straight = 0; A = 60; kappa_ = 1/A^2; kapparef0 = 0; s1 = 200; 
+sf = sqrt(2*A^2*2*pi)+s1; drf = 0; psirf = 0;
+x0 = [0 5 0 0 0 kapparef_straight].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.use_dr = use_dr; p.fjx = fjx; p.fjy = fjy; p.fax = fax; p.fay = fay; p.fr = fr; p.kapparef_straight = kapparef_straight; 
-p.kappa_ = kappa_; p.kapparef0 = kapparef0; 
+p.A = A; p.kappa_ = kappa_; p.kapparef0 = kapparef0; 
 p.s1 = s1; p.sf = sf; p.drf = drf; p.psirf = psirf;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.t1 = t1; p.tf = tf; p.N = N;  
 
@@ -29,7 +36,11 @@ inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(
 error_flag = 1;
 while error_flag
     try
-        solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
+        if use_solution_as_init
+            solinit = bvpinit(sol,[p.t0 p.tf]);
+        else
+            solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
+            end
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
@@ -70,6 +81,11 @@ sol_mesh = [sol_mesh_1 sol_mesh_2];
 
 %%
 % optimal control inputs
+if exist('u','var')
+    if ~isempty(u)
+        clear u
+    end
+end
 for i=1:length(sol_mesh)
     u(:,i) = uopt(sol.y(:,i),p); % Steuerung
 end
@@ -112,7 +128,8 @@ v_RL = (-(2*p.fr*sqrt((9*p.fr - 8*kapparef_klothoide.^2)/(4*p.fr)) - 3*p.fr)./(2
 dr_RL = (p.fay*kapparef_klothoide.^3.*v_RL.^4)/(p.fr);
 l1_RL = -2*p.fay*kapparef_klothoide.^2.*v_RL;
 l5_RL = -p.fay*kapparef_klothoide.*v_RL.^3;
-kappa_RL = kapparef_klothoide./(1-dr_RL.*kapparef_klothoide);
+kappa_RL = kapparef_klothoide;
+kappa_RL_exakt = kapparef_klothoide./(1-dr_RL.*kapparef_klothoide);
 ay_RL = kappa_RL.*v_RL.^2;
 v_RL_approx_auf_ref = (2./(3*p.fay*kapparef_klothoide.^2)).^(1/4);
 

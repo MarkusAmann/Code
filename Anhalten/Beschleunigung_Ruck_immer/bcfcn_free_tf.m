@@ -60,7 +60,7 @@ res = [X0(1) - p.x0(1);...
     l1L - l1R - 2*nu_tilde;... % Transversalitätsbedingung für l1 (l1(t1-) = l1(t1+) + dg/dx|t1*nu_tilde)
     l2L - l2R;...
     l3L - l3R;...
-    sL - p.s1 % zusätzliche interne Randbedingung
-  ]; 
+    sL - p.s1;... % zusätzliche interne Randbedingung
+    ]; 
 
 end

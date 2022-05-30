@@ -9,7 +9,7 @@ fj = 1;            % Gewichtung Ruck.
 
 sf = 1000;   % Länge der Gerade  
 
-s0 = 0; v0 = 10; a0 = 0; vf = 0; af = 0;
+s0 = 0; v0 = 0; a0 = 0; vf = 0; af = 0;
 
 %% randwertproblem
 
@@ -111,25 +111,27 @@ fprintf('l1_l: %f\ntf: %f\nJ: %f\n',c1_sol,tf_sol,J_1)
 
 %%
 figure(1)
-subplot(4,1,1)
-plot(t_vec,s_vec)
+subplot(2,2,1)
+plot(t_vec,s_vec,'-','Linewidth',2)
 ylabel('s_r [m]')
-grid on
-hold on
-subplot(4,1,2)
-plot(t_vec,v_vec)
-ylabel('v [m/s]')
-grid on
-hold on
-subplot(4,1,3)
-plot(t_vec,a_vec)
-ylabel('a_x_{opt} [m/s^2]')
 xlabel('t [s]')
 grid on
 hold on
-subplot(4,1,4)
-plot(t_vec,j_vec)
-ylabel('j_x_{opt} [m/s^3]')
+subplot(2,2,2)
+plot(t_vec,v_vec,'-','Linewidth',2)
+ylabel('v [m/s]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,2,3)
+plot(t_vec,a_vec,'-','Linewidth',2)
+ylabel('a_x [m/s^2]')
+xlabel('t [s]')
+hold on
+grid on
+subplot(2,2,4)
+plot(t_vec,j_vec,'-','Linewidth',2)
+ylabel('j_x [m/s^3]')
 xlabel('t [s]')
 grid on
 hold on

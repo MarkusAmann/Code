@@ -3,10 +3,10 @@ clear all
 % close all
 
 %% Parameter
-x0 = [0 10 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
+x0 = [0 15 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
 jlim = 3; use_umax = 0;
 umax = jlim; umin = -jlim;
-t0 = 0; t1 = 40; tf = t1+1; N = 100; fa = 1; fj = 1; sf = 500; s1 = 200; 
+t0 = 0; t1 = 40; tf = t1+1; N = 100; fa = 1; fj = 1; sf = 400; s1 = 200; 
 
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; 
 p.sf = sf; p.s1 = s1; p.t1 = t1;
@@ -101,6 +101,49 @@ x_ref = cumtrapz(sol_mesh,dx_ref);
 y_ref = cumtrapz(sol_mesh,dy_ref);
 
 %%
+figure(11)
+% subplot(2,2,1)
+% plot(sol_mesh,sopt,'-','Linewidth',2)
+% ylabel('s_r [m]')
+% xlabel('t [s]')
+% grid on
+% hold on
+subplot(2,1,1)
+plot(sol_mesh,vopt,'-','Linewidth',2)
+ylabel('v [m/s]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,1,2)
+plot(sol_mesh,axopt,'-','Linewidth',2)
+ylabel('a_x [m/s^2]')
+xlabel('t [s]')
+hold on
+grid on
+subplot(2,2,4)
+plot(sol_mesh,jopt,'-','Linewidth',2)
+ylabel('j_x [m/s^3]')
+xlabel('t [s]')
+grid on
+hold on
+
+figure(22)
+subplot(2,1,1)
+plot(sol_mesh,l1opt,'-','Linewidth',2)
+ylabel('l_{1,opt}')
+grid on
+hold on
+subplot(2,1,2)
+plot(sol_mesh,l2opt,'-','Linewidth',2)
+ylabel('l_{2,opt}')
+grid on
+hold on
+% subplot(3,1,3)
+% plot(sol_mesh,l3opt,'-','Linewidth',2)
+% ylabel('l_{3,opt}')
+% grid on
+% hold on
+
 figure(1)
 subplot(4,1,1)
 plot(sol_mesh,sopt)

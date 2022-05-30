@@ -1,13 +1,19 @@
 % clc
-clear all
-% close all
+use_solution_as_init = 1;
+close_figs = 0;
+if close_figs 
+    close all
+end
+if ~use_solution_as_init
+    clearvars -except use_solution_as_init close_figs
+end
 
 %% Parameter
 x0 = [0 1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(4,1);
 jlim = 3; use_umax = 0;
 umax = jlim; umin = -jlim;
-t0 = 0; t1 = 1; tf = 2; N = 100; fa = 1; fy = 1; fj = 1; kapparef_straight = 0.0; kapparef_curve = 0.01; sf = 700; s1 = 200; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
-
+t0 = 0; t1 = 1; tf = 2; N = 100; fa = 1; fy = 1; fj = 1; kapparef_straight = 0.0; kapparef_curve = 1/(75.8778/2); s1 = 200; sf = s1+2*pi/kapparef_curve; %s1 = sf-2*pi/4*1/kapparef_curve; % Strecke, nach der von Gerade auf Kreis umgeschaltet wird
+%sf = 400; %kapparef_curve = 0.01;
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fy = fy; p.fj = fj; p.kapparef_straight = kapparef_straight; p.kapparef_curve = kapparef_curve; 
 p.sf = sf; p.s1 = s1; p.t1 = t1;
 p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.N = N;  
@@ -33,7 +39,11 @@ inits = 10.^(floor((log10(start_inits)>0).*log10(start_inits))).*abs(randn(size(
 error_flag = 1;
 while error_flag
     try
-        solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
+        if use_solution_as_init
+            solinit = bvpinit(sol,[p.t0 p.tf]);
+        else
+            solinit = bvpinit(t,init_guess,inits); % [nu_tilde, delta_t1, delta_t2]
+            end
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         error_flag = 0;
     catch ME
@@ -68,6 +78,11 @@ sol_mesh = [sol_mesh_1 sol_mesh_2];
 
 %%
 % optimal control inputs
+if exist('u','var')
+    if ~isempty(u)
+        clear u
+    end
+end
 for i=1:length(sol_mesh)
     u(:,i) = uopt(sol.y(:,i),p); % Steuerung
 end

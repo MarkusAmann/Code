@@ -1,9 +1,9 @@
 % clc
 clear all
-% close all
+close all
 
 %% Parameter
-x0 = [0 10 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
+x0 = [0 0.1 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
 jlim = 0.5; 
 umax = jlim; umin = -jlim; use_umax = 0;
 t0 = 0; tf = 1; N = 100; fj = 1; sf = 1000; 

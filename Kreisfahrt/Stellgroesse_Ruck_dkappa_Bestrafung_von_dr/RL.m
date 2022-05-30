@@ -1,50 +1,56 @@
-syms s v a dr psir kappa j dkappa l1 l2 l3 l4 l5 l6 fax fjx fay fjy fr kappar
-% ohne Vereinfachung dr*kappar << 1
-x_sym = [s v a dr psir kappa l1 l2 l3 l4 l5 l6];
-u_sym = [j dkappa];
-f_sym = [fax fjx fay fjy fr];
-fax_num = 1; fjx_num = 1; fay_num = 1; fjy_num = 1; fr_num = 10;
-f_num = [fax_num fjx_num fay_num fjy_num fr_num];
-kappar_num = 0.01;
+syms sr v a dr psir kappa l1 l2 l3 l4 l5 l6 ...
+    sr_RL_sym v_RL_sym a_RL_sym dr_RL_sym psir_RL_sym kappa_RL_sym l1_RL_sym l2_RL_sym l3_RL_sym l4_RL_sym l5_RL_sym l6_RL_sym ...
+    fax_sym fjx_sym fay_sym fjy_sym fr_sym kappar_sym
 
-eqn_RL = 1/2*fay^2/fr*kappar^6*v^8-3/2*fay*kappar^2*v^4+1;
-v_RL_all_sym = solve(eqn_RL == 0, v);
-v_RL_all_sym_subs = double(subs(v_RL_all_sym,[f_sym kappar],[f_num kappar_num]));
-eqn_RL_num = subs(eqn_RL,f_sym,f_num);
-v_RL_all = solve(eqn_RL_num == 0, v);
-v_RL_all_num = subs(v_RL_all,kappar,kappar_num);
-v_RL_all_num = double(v_RL_all_num);
-v_RL = min(v_RL_all_num(imag(v_RL_all_num) == 0 & real(v_RL_all_num) >= 0));
-dr_RL = kappar_num^3*v_RL^4*fay_num/fr_num;
-l1_RL = -2*fay_num*kappar_num^2*v_RL^3;
-l5_RL = -fay_num*kappar_num*v_RL^3;
-kappa_RL = kappar_num;
-kappa_RL_corrected = kappar_num/(1-dr_RL*kappar_num);
-ay_RL = kappa_RL_corrected*v_RL^2;
-s_RL = 10;
+t0 = 0; tf = 1; N = 100; fjy = 1; fjx = 1; fax = 1; fay = 1; fr = 1; kapparef = 0.01; sf = 1000; drf = 0; psirf = 0;
+x0 = [0 5 0 0 0 kapparef].'; l0 = [0 0 0 0 0 0].'; %l0 = 0.1*randn(4,1);
+p.fjx = fjx; p.fjy = fjy; p.fax = fax; p.fay = fay; p.fr = fr; p.kapparef = kapparef; p.sf = sf; p.drf = drf; p.psirf = psirf;
+p.x0 = x0; p.l0 = l0; p.t0 = t0; p.tf = tf; p.N = N;  
+
+sr_RL = 10;
+v_RL = ((3*p.fr)/(2*p.fay*p.kapparef^4)-sqrt(((3*p.fr)/(2*p.fay*p.kapparef^4))^2-((2*p.fr)/(p.fay^2*p.kapparef^6))))^(1/4);
 a_RL = 0;
+dr_RL = p.kapparef^3*v_RL^4*p.fay/p.fr;
 psir_RL = 0;
-l2_RL = 0; l3_RL = 0; l4_RL = 0; l6_RL = 0;
-j_RL = 0; 
-X_RL = [s_RL v_RL a_RL dr_RL psir_RL kappa_RL l1_RL l2_RL l3_RL l4_RL l5_RL l6_RL];
-eqns_sym = [v*cos(psir)/(1-dr*kappar);...
+kappa_RL = p.kapparef;
+l1_RL = -2*p.fay*p.kapparef^2*v_RL^3;
+l2_RL = 0;
+l3_RL = 0;
+l4_RL = 0;
+l5_RL = -p.fay*p.kapparef*v_RL^3;
+l6_RL = 0;
+z_RL_num = [sr_RL; v_RL; a_RL; dr_RL; psir_RL; kappa_RL; l1_RL; l2_RL; l3_RL; l4_RL; l5_RL; l6_RL];
+
+z_RL_sym = [sr_RL_sym; v_RL_sym; a_RL_sym; dr_RL_sym; psir_RL_sym; kappa_RL_sym; l1_RL_sym; l2_RL_sym; l3_RL_sym; l4_RL_sym; l5_RL_sym; l6_RL_sym];
+z = [sr v a dr psir kappa l1 l2 l3 l4 l5 l6].';
+
+j = -l3/fjx_sym; 
+dkappa = -(l6 + 2*fjy_sym*kappa*a*v^3)/(fjy_sym*v^4);
+
+f = [v*cos(psir)/(1-dr*kappar_sym);...
     a;...
     j;...
     v*sin(psir);...
-    kappa*v - kappar*v*cos(psir)/(1-dr*kappar);...
+    kappa*v - kappar_sym*v*cos(psir)/(1-dr*kappar_sym);...
     dkappa;...
     0;...
-    -(2*fay*v^3*kappa^2 + 2*fjy*dkappa^2*v^3 + 4*fjy*kappa*a^2*v + 6*fjy*kappa*a*v^2*dkappa + l1*cos(psir)/(1-dr*kappar) + l4*sin(psir) + l5*kappa - l5*kappar*cos(psir)/(1-dr*kappar));...
-    -(fax*a + 4*fjy*kappa*a*v^2 + 2*fjy*kappa*v^3*dkappa + l2);...
-    -(fr*dr + kappar*l1*v*cos(psir)/(1-dr*kappar)^2 - kappar^2*l5*v*cos(psir)/(1-dr*kappar)^2);...
-    -(l4*v*cos(psir) - l1*v*sin(psir)/(1-dr*kappar) + kappar*l5*v*sin(psir)/(1-dr*kappar));...
-    -(fay*kappa*v^4 + 2*fjy*a^2*v^2 + 2*fjy*a*v^3*dkappa + l5*v)];
+    -(2*fay_sym*v^3*kappa^2 + 2*fjy_sym*dkappa^2*v^3 + 4*fjy_sym*kappa*a^2*v + 6*fjy_sym*kappa*a*v^2*dkappa + l1*cos(psir)/(1-dr*kappar_sym) + l4*sin(psir) + l5*kappa - l5*kappar_sym*cos(psir)/(1-dr*kappar_sym));...
+    -(fax_sym*a + 4*fjy_sym*kappa*a*v^2 + 2*fjy_sym*kappa*v^3*dkappa + l2);...
+    -(fr_sym*dr + kappar_sym*l1*v*cos(psir)/(1-dr*kappar_sym)^2 - kappar_sym^2*l5*v*cos(psir)/(1-dr*kappar_sym)^2);...
+    -(l4*v*cos(psir) - l1*v*sin(psir)/(1-dr*kappar_sym) + kappar_sym*l5*v*sin(psir)/(1-dr*kappar_sym));...
+    -(fay_sym*kappa*v^4 + 2*fjy_sym*a^2*v^2 + 2*fjy_sym*a*v^3*dkappa + l5*v)];
 
-eqns_subs = subs(eqns_sym,[f_sym kappar],[f_num kappar_num]);
+A = jacobian(f,z);
+A_RL_sym = subs(A,z,z_RL_sym);
+A_RL_num = double(subs(subs(A,z,z_RL_num),[fjx_sym fjy_sym fax_sym fay_sym fr_sym kappar_sym],[p.fjx p.fjy p.fax p.fay p.fr p.kapparef]));
 
-A = jacobian(eqns_subs,x_sym);
-B = jacobian(eqns_subs,u_sym);
-A_num = double(subs(A,[x_sym u_sym],[X_RL j_RL kappa_RL_corrected]));
-B_num = double(subs(B,[x_sym u_sym],[X_RL j_RL kappa_RL_corrected]));
-ew = eig(A_num);
-ew(5:6)
+ew = eig(A_RL_num);
+ew_real = real(ew);
+ew_imag = imag(ew);
+figure
+plot(ew_real,ew_imag,'*','MarkerSize',8)
+grid on
+hold on
+set(gcf,'renderer','Painters')
+xlabel('Real','Interpreter','Latex')
+ylabel('Imag','Interpreter','Latex')

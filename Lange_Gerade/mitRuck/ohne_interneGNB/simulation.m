@@ -3,10 +3,10 @@ clear all
 % close all
 
 %% Parameter
-x0 = [0 10 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
-jlim = 0.5; 
+x0 = [0 0 0].'; l0 = [0 0 0].'; %l0 = 0.1*randn(3,1);
+jlim = 0.2; 
 umax = jlim; umin = -jlim; use_umax = 0;
-t0 = 0; tf = 1; N = 100; fa = 1; fj = 1; sf = 1000; 
+t0 = 0; tf = 1; N = 100; fa = 0.001; fj = 1; sf = 300; 
 tf_free = 1; % ACHTUNG: ich habe den Eindruck, dass die Optimierung bei aktiver Stellgrößenbeschränkung und freier Endzeit Probleme hat
 % aufgrund des instabilen Teils der Lösung
 p.use_umax = use_umax; p.umax = umax; p.umin = umin; p.fa = fa; p.fj = fj; p.sf = sf; 
@@ -153,7 +153,7 @@ switch tf_free
         deltat = mean(diff(t));
         p.deltat = deltat;
         init_guess = @(x)guess_free_tf(t,p);
-        solinit = bvpinit(t,init_guess,0.1);
+        solinit = bvpinit(t,init_guess,-0.01);
         sol = bvp4c(@sys_gesamt_free_tf, @bcfcn_free_tf, solinit, bvpoptions, p);
         % optimal states
         sol_mesh = sol.x;
@@ -189,20 +189,26 @@ fprintf('l1: %f\ntf: %f\nJ: %f\n',l1opt(1),tf_opt,J_2)
 
 %%
 % figure('Name','sva')
-figure(4)
-subplot(3,1,1)
-plot(sol_mesh,sopt)
+figure(1)
+subplot(2,2,1)
+plot(sol_mesh,sopt,'k--','Linewidth',1.5)
 ylabel('s_r [m]')
 grid on
 hold on
-subplot(3,1,2)
-plot(sol_mesh,vopt)
+subplot(2,2,2)
+plot(sol_mesh,vopt,'k--','Linewidth',1.5)
 ylabel('v [m/s]')
 grid on
 hold on
-subplot(3,1,3)
-plot(sol_mesh,aopt)
-ylabel('a_x_{opt} [m/s^2]')
+subplot(2,2,3)
+plot(sol_mesh,aopt,'k--','Linewidth',1.5)
+ylabel('a_x [m/s^2]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,2,4)
+plot(sol_mesh,jopt,'k--','Linewidth',1.5)
+ylabel('j_x [m/s^3]')
 xlabel('t [s]')
 grid on
 hold on

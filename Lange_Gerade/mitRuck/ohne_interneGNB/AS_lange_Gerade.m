@@ -1,16 +1,16 @@
 % close all; 
-clear;
+% clear;
 
 syms c1 c2 cv cs k1 k2;
 syms tf;
 
 %% hier parameter vorgeben
-fa = 0.001;            % Gewichtung Längsbeschleunigung
+fa = 1;            % Gewichtung Längsbeschleunigung
 fj = 1;            % Gewichtung Ruck.
 
 sf = 1000;   % Länge der Gerade  
 
-s0 = 0; v0 = 10; a0 = 0; vf = 0; af = 0;
+s0 = 0; v0 = 40; a0 = 1; vf = 0; af = 0;
 
 %% randwertproblem
 
@@ -21,17 +21,7 @@ lambda2 = @(t) c2 - c1*t;
       v = @(t) k1*sqrt(fj/fa)*exp(sqrt(fa/fj)*t) - k2*sqrt(fj/fa)*exp(-sqrt(fa/fj)*t) + c1/(2*fa)*t^2 - c2/fa*t + cv;
       s = @(t) k1*(fj/fa)*exp(sqrt(fa/fj)*t) + k2*(fj/fa)*exp(-sqrt(fa/fj)*t) + c1/(6*fa)*t^3 - c2/(2*fa)*t^2 + cv*t + cs;
 
-% tf = 40;
-% dd = vpasolve([s(0) == s0;...
-%     v(0) == v0;...
-%     a(0) == a0;...
-%     s(tf) == sf;...
-% %     a(tf) == af;...
-%     j(tf) == 0;...
-% %     v(tf) == vf;...
-%     lambda2(tf) == 0
-%     ], [0,0,0,0,0,0]);
-
+tf = 40;
 dd = vpasolve([s(0) == s0;...
     v(0) == v0;...
     a(0) == a0;...
@@ -39,8 +29,18 @@ dd = vpasolve([s(0) == s0;...
 %     a(tf) == af;...
     j(tf) == 0;...
 %     v(tf) == vf;...
-    lambda2(tf) == 0;...
-    1/2*fa*a(tf)^2-1/2*fj*j(tf)^2+lambda1*v(tf)+lambda2(tf)*a(tf)+1==0], [0,0,0,0,1e-40,0,19]);
+    lambda2(tf) == 0
+    ], [0,0,0,0,0,0]);
+
+% dd = vpasolve([s(0) == s0;...
+%     v(0) == v0;...
+%     a(0) == a0;...
+%     s(tf) == sf;...
+%     a(tf) == af;...
+% %     j(tf) == 0;...
+%     v(tf) == vf;...
+% %     lambda2(tf) == 0;...
+%     1/2*fa*a(tf)^2-1/2*fj*j(tf)^2+lambda1*v(tf)+lambda2(tf)*a(tf)+1==0], [0,0,0,0,1e-40,0,25]);
 
 c1_sol = double(dd.c1);
 c2_sol = double(dd.c2);
@@ -53,6 +53,7 @@ if isfield(dd, 'tf')
 else
     tf_sol = tf;
 end
+tf_analytic = (fj*sqrt(fa/fj)*log((-(c1_sol*fj*sqrt(fa/fj))/(fa^2)+(sqrt(4*fa^3*k1_sol*k2_sol+c1_sol^2*fj))/(fa^(3/2)))/(2*k1_sol)))/(fa);
 
 lambda1_sol = matlabFunction(subs(lambda1, c1, c1_sol));
 lambda2_sol = matlabFunction(subs(lambda2,{c1,c2},{c1_sol,c2_sol}));
@@ -125,32 +126,80 @@ amax_calc = c1_calc*sqrt(fj/fa^3) - c1_calc*sqrt(fj/fa^3)*log(c1_calc/(a0+c1_cal
 [amax,idmax] = max(a_vec);
 t_vec(idmax);
 
-tmin_calc = sqrt(fj/fa)*(log(sqrt(fj/fa^3)) + sqrt(fj/fa)*tf_sol);
+tmin_calc = sqrt(fj/fa)*(log(sqrt(fj/fa^3)) + sqrt(fa/fj)*tf_sol);
 amin_calc = -c1_calc*sqrt(fj/fa^3) - c1_calc*tf_sol/fa + c1_calc*sqrt(fj/fa^3)*(log(sqrt(fj/fa^3)) + sqrt(fj/fa)*tf_sol);
 [amin,idmin] = min(a_vec);
 t_vec(idmin);
+a_lin = c1_sol*t_vec/fa -c2_sol/fa;
+a_connect = (a_vec(end)-a_vec(1))/(tf_sol)*t_vec + a_vec(1);
+fxx = [t_vec fliplr(t_vec)];
+fyy = [a_connect fliplr(a_lin)];
 
 %%
-figure(1)
-subplot(4,1,1)
-plot(t_vec,s_vec)
+fill_color = [0.8 0.8 0.8];
+figure(11)
+subplot(2,2,1)
+plot(t_vec,s_vec,'-','Linewidth',2)
 ylabel('s_r [m]')
-grid on
-hold on
-subplot(4,1,2)
-plot(t_vec,v_vec)
-ylabel('v [m/s]')
-grid on
-hold on
-subplot(4,1,3)
-plot(t_vec,a_vec)
-ylabel('a_x_{opt} [m/s^2]')
 xlabel('t [s]')
 grid on
 hold on
-subplot(4,1,4)
-plot(t_vec,j_vec)
-ylabel('j_x_{opt} [m/s^3]')
+subplot(2,2,2)
+plot(t_vec,v_vec,'-','Linewidth',2)
+ylabel('v [m/s]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,2,3)
+fh = fill(fxx,fyy,fill_color);
+hold on
+plot(t_vec,a_vec,'-','Linewidth',2,'Color',[0 0.4470 0.7410]) % blau
+% plot(t_vec,a_vec,'-','Linewidth',2,'Color',[0.8500 0.3250 0.0980]) % orange
+plot(t_vec,a_lin,'k:','Linewidth',1.3)
+plot(t_vec,a_connect,'k:','Linewidth',1.3)
+alpha(0.3)
+ylabel('a_x [m/s^2]')
+xlabel('t [s]')
+grid on
+subplot(2,2,4)
+plot(t_vec,j_vec,'-','Linewidth',2)
+ylabel('j_x [m/s^3]')
+xlabel('t [s]')
+grid on
+hold on
+a1 = axes('position',[.35 .35 .17 .17]);
+box on % put box around new pair of axes
+indexOfInterest = (t_vec <= 40) & (t_vec >= 34); % range of t near perturbation
+plot(a1, t_vec(indexOfInterest),a_vec(indexOfInterest),'-','Linewidth',2,'Color',[0 0.4470 0.7410]) % blau
+% plot(a1, t_vec(indexOfInterest),a_vec(indexOfInterest),'-','Linewidth',2,'Color',[0.8500 0.3250 0.0980]) % orange
+hold on
+grid on
+plot(a1, t_vec(indexOfInterest),a_lin(indexOfInterest),'k:','Linewidth',1.5)
+plot(a1, t_vec(indexOfInterest),a_connect(indexOfInterest),'k:','Linewidth',1.3)
+axis tight
+
+figure(1)
+subplot(2,2,1)
+plot(t_vec,s_vec,'-*','Linewidth',2,'MarkerIndices',1:100:length(t_vec))
+ylabel('s_r [m]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,2,2)
+plot(t_vec,v_vec,'-*','Linewidth',2,'MarkerIndices',1:100:length(t_vec))
+ylabel('v [m/s]')
+xlabel('t [s]')
+grid on
+hold on
+subplot(2,2,3)
+plot(t_vec,a_vec,'-*','Linewidth',2,'MarkerIndices',1:100:length(t_vec))
+ylabel('a_x [m/s^2]')
+xlabel('t [s]')
+hold on
+grid on
+subplot(2,2,4)
+plot(t_vec,j_vec,'-*','Linewidth',2,'MarkerIndices',1:100:length(t_vec))
+ylabel('j_x [m/s^3]')
 xlabel('t [s]')
 grid on
 hold on
